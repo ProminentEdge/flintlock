@@ -7,6 +7,7 @@ from .firestation.api import StaffingResource, FireStationResource, FireDepartme
 from .vida.api import PersonResource, ShelterResource
 from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView
 from fileservice.api import FileItemResource
+from fileservice.api import view2
 from tastypie.api import Api
 from firestation.views import Home
 from facesearch.api import FaceSearchResource
@@ -53,4 +54,6 @@ urlpatterns = patterns('',
     url(r'^persons/$', PersonIndexView.as_view(), name='persons_list'),
     url(r'^persons/(?P<pk>[0-9]+)/$', PersonDetailView.as_view(), name='persons_detail'),
     url(r'^shelters/(?P<pk>[0-9]+)/$', ShelterDetailView.as_view(), name='shelter_detail'),
+    url(r'^fileservice_raw/(?P<name>[\w\d_.-]+)/$', view2, name='view2'),
+    url(r'^fileservice_raw/$', view2, name='view2'),
 )

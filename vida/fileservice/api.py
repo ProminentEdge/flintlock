@@ -124,6 +124,7 @@ class FileItemResource(Resource):
     def prepend_urls(self):
         """ Add the following array of urls to the resource base urls """
         return [
+            url(r"^(?P<resource_name>%s)/view/(?P<name>[\w\d_.-]+)%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('view'), name="api_fileitem_view"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/download%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('download'), name="api_fileitem_download"),
             url(r"^(?P<resource_name>%s)/(?P<name>[\w\d_.-]+)/download%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('download'), name="api_fileitem_download"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/view%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('view'), name="api_fileitem_view"),
@@ -135,6 +136,7 @@ class FileItemResource(Resource):
     def download(self, request, **kwargs):
         # method check to avoid bad requests
         self.method_check(request, allowed=['get'])
+        self.is_authenticated(request)
 
         response = None
         file_item = FileItemResource.get_file_item(kwargs)
@@ -166,9 +168,11 @@ class FileItemResource(Resource):
         example use:
         http://192.168.33.15/api/v1/fileservice/med.mp4/view/
         '''
+        response = None
         # method check to avoid bad requests
         self.method_check(request, allowed=['get'])
-        file_item = FileItemResource.get_file_item(kwargs)
+        self.is_authenticated(request)
+        file_item = FileItemResource.get_file_by_name(kwargs['name'])
         if file_item:
             # set content_type to '' so that content_type from nginx/apache is returned
             response = HttpResponse(content_type='')
@@ -181,4 +185,3 @@ class FileItemResource(Resource):
         if not response:
             response = self.create_response(request, {'status': 'filename not specified'})
         return response
-
