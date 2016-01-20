@@ -1,7 +1,15 @@
 from django.contrib import admin
-from vida.vida.models import Person, Shelter
+from vida.vida.models import Person, Shelter, Track
 import uuid
 import helpers
+
+class TrackAdmin(admin.ModelAdmin):
+    fields = ['user', 'entity_type', 'force_type', 'geom']
+    list_display = ('user', 'timestamp', 'entity_type', 'force_type', 'geom')
+    search_fields = ['user', 'timestamp', 'entity_type', 'force_type', 'geom']
+    readonly_fields = ('timestamp',)
+
+admin.site.register(Track, TrackAdmin)
 
 class PersonAdmin(admin.ModelAdmin):
     fields = ['created_by', 'shelter_id', 'family_name', 'given_name', 'gender', 'age', 'description', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'notes', 'barcode']

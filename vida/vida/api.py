@@ -1,11 +1,13 @@
 from django.conf.urls import url
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.utils import trailing_slash
-from tastypie.authentication import BasicAuthentication
+from tastypie.authentication import BasicAuthentication, Authentication
 from tastypie.authorization import Authorization
 from tastypie import fields
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from tastypie.resources import Resource
+
 import helpers
 import os
 import requests, json
@@ -13,7 +15,7 @@ import requests, json
 from vida.facesearch.tasks import reindex_gallery
 from vida.fileservice.helpers import get_gallery_file
 from vida.vida.models import Person
-from vida.vida.models import Shelter
+from vida.vida.models import Shelter, Track
 
 
 
@@ -21,7 +23,33 @@ class UserResource(ModelResource):
     class Meta:
         queryset = get_user_model().objects.all()
         fields = ['username', 'first_name', 'last_name']
-        resource_name = 'created_by'
+        resource_name = 'user'
+
+
+class TrackResource(ModelResource):
+    #user = fields.ForeignKey(UserResource, 'user')
+    #user = fields.ToOneField(UserResource, 'user',  full=True, blank=False, null=False)
+
+    class Meta:
+        queryset = Track.objects.all()
+        fields = ['user', 'entity_type', 'force_type', 'geom']
+        include_resource_uri = False
+        allowed_methods = ['get', 'post', 'put']
+        always_return_data = True
+        authentication = BasicAuthentication()
+        authorization = Authorization()
+
+    def determine_format(self, request):
+        return 'application/json'
+
+    def deserialize(self, request, data, format=None):
+        if not format:
+            format = request.META.get('CONTENT_TYPE', 'application/json')
+
+        if format == 'application/x-www-form-urlencoded':
+            return request.POST
+
+        return super(ModelResource, self).deserialize(request, data, format)
 
 
 class PersonResource(ModelResource):
