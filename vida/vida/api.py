@@ -15,7 +15,7 @@ import requests, json
 from vida.facesearch.tasks import reindex_gallery
 from vida.fileservice.helpers import get_gallery_file
 from vida.vida.models import Person
-from vida.vida.models import Shelter, Track
+from vida.vida.models import Shelter, Track, Report, Form
 
 
 
@@ -50,6 +50,55 @@ class TrackResource(ModelResource):
             return request.POST
 
         return super(ModelResource, self).deserialize(request, data, format)
+
+
+class FormResource(ModelResource):
+
+    class Meta:
+        queryset = Form.objects.all()
+        fields = ['user', 'timestamp', 'schema']
+        include_resource_uri = False
+        allowed_methods = ['get']
+        always_return_data = True
+        authentication = BasicAuthentication()
+        authorization = Authorization()
+
+    def determine_format(self, request):
+        return 'application/json'
+
+    def deserialize(self, request, data, format=None):
+        if not format:
+            format = request.META.get('CONTENT_TYPE', 'application/json')
+
+        if format == 'application/x-www-form-urlencoded':
+            return request.POST
+
+        return super(ModelResource, self).deserialize(request, data, format)
+
+
+class ReportResource(ModelResource):
+
+    class Meta:
+        queryset = Report.objects.all()
+        fields = ['user', 'timestamp', 'form', 'data', 'geom']
+        include_resource_uri = False
+        allowed_methods = ['get', 'post', 'put']
+        always_return_data = True
+        authentication = BasicAuthentication()
+        authorization = Authorization()
+
+    def determine_format(self, request):
+        return 'application/json'
+
+    def deserialize(self, request, data, format=None):
+        if not format:
+            format = request.META.get('CONTENT_TYPE', 'application/json')
+
+        if format == 'application/x-www-form-urlencoded':
+            return request.POST
+
+        return super(ModelResource, self).deserialize(request, data, format)
+
 
 
 class PersonResource(ModelResource):

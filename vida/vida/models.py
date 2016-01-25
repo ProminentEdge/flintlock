@@ -5,6 +5,9 @@ import helpers
 
 
 class Track(models.Model):
+    """
+    A device can report its location which is referred to as a Track by the application.
+    """
     ENTITY_TYPE_CHOICES = [
         (0, 'Unknown'),
         (1, 'Person'),
@@ -25,6 +28,27 @@ class Track(models.Model):
 
     def __unicode__(self):
         return unicode(self.user)
+
+
+class Form(models.Model):
+    """
+    A data-driver way of creating a form. the schema describes the fields, their types, order, etc of the form
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    schema = models.TextField(null=False, blank=False)
+
+
+class Report(models.Model):
+    """
+    Each report is an 'instance' of a Form. The schema of the form is used to present a form to the user. The data
+    filled out by the user becomes a report.
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    form = models.ForeignKey('Form', null=True, blank=True)
+    data = models.TextField(null=False, blank=False)
+    geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
 
 
 class Shelter(models.Model):

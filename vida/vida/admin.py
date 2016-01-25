@@ -1,5 +1,5 @@
 from django.contrib import admin
-from vida.vida.models import Person, Shelter, Track
+from vida.vida.models import Person, Shelter, Track, Form, Report
 import uuid
 import helpers
 
@@ -10,6 +10,22 @@ class TrackAdmin(admin.ModelAdmin):
     readonly_fields = ('timestamp',)
 
 admin.site.register(Track, TrackAdmin)
+
+class FormAdmin(admin.ModelAdmin):
+    fields = ['user', 'schema']
+    list_display = ('user', 'timestamp', 'schema')
+    search_fields = ['user', 'timestamp', 'schema']
+    readonly_fields = ('timestamp',)
+
+admin.site.register(Form, FormAdmin)
+
+class ReportAdmin(admin.ModelAdmin):
+    fields = ['user', 'form', 'data', 'geom']
+    list_display = ('user', 'timestamp', 'form', 'data', 'geom')
+    search_fields = ['user', 'timestamp', 'form', 'data', 'geom']
+    readonly_fields = ('timestamp',)
+
+admin.site.register(Report, ReportAdmin)
 
 class PersonAdmin(admin.ModelAdmin):
     fields = ['created_by', 'shelter_id', 'family_name', 'given_name', 'gender', 'age', 'description', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'notes', 'barcode']
