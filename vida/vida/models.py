@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.gis.db import models
+import json
 from django.contrib.gis.geos import Point
 import helpers
 
@@ -37,6 +38,13 @@ class Form(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     schema = models.TextField(null=False, blank=False)
+
+    def __unicode__(self):
+        schema_dict = json.loads(self.schema)
+        title = '<no title>'
+        if 'title' in schema_dict:
+            title = schema_dict['title']
+        return u'id={}, {}'.format(self.id, title)
 
 
 class Report(models.Model):

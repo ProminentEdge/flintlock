@@ -57,7 +57,7 @@ class FormResource(ModelResource):
     class Meta:
         queryset = Form.objects.all()
         fields = ['user', 'timestamp', 'schema']
-        include_resource_uri = False
+        include_resource_uri = True
         allowed_methods = ['get']
         always_return_data = True
         authentication = BasicAuthentication()
@@ -77,6 +77,7 @@ class FormResource(ModelResource):
 
 
 class ReportResource(ModelResource):
+    form = fields.ForeignKey(FormResource, 'form')
 
     class Meta:
         queryset = Report.objects.all()
