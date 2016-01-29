@@ -54,4 +54,5 @@ urlpatterns = patterns('',
     url(r'^persons/$', PersonIndexView.as_view(), name='persons_list'),
     url(r'^persons/(?P<pk>[0-9]+)/$', PersonDetailView.as_view(), name='persons_detail'),
     url(r'^shelters/(?P<pk>[0-9]+)/$', ShelterDetailView.as_view(), name='shelter_detail'),
+    url(r'^common-operating-picture/$', CommonOperatingPicture.as_view(), name='cop'),
 )

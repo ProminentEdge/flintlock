@@ -5,7 +5,8 @@
 
     .controller('jurisdictionController', function($scope, $http, FireStation, map, shelterServ) {
           var departmentMap = map.initMap('map', {scrollWheelZoom: false});
-          var showStations = true;
+          var config = {centroid:  L.latLng(38.90, -77.0164)};
+          var showStations = false;
           var stationIcon = L.VIDAMarkers.firestationmarker();
           var headquartersIcon = L.VIDAMarkers.headquartersmarker();
           var fitBoundsOptions = {};

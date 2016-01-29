@@ -30,6 +30,7 @@
 
             angular.extend(defaultOptions, options);
             var map = L.map(div, options);
+            var hash = new L.Hash(map);
             this.addBaseLayers(map);
             return map;
 

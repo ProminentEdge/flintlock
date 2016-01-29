@@ -105,6 +105,8 @@ class PersonIndexView(generic.ListView):
         return queryset
 
 
+class CommonOperatingPicture(generic.base.TemplateView):
+    template_name = 'vida/cop.html'
 
 class PersonDetailView(generic.DetailView):
     model = Person
