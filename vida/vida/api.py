@@ -12,7 +12,7 @@ import helpers
 import os
 import requests, json
 
-from vida.facesearch.tasks import reindex_gallery
+
 from vida.fileservice.helpers import get_gallery_file
 from vida.vida.models import Person
 from vida.vida.models import Shelter, Track, Report, Form
@@ -247,7 +247,6 @@ class PersonResource(ModelResource):
                 if (ctr != length):
                     res['Status'] += ' || '
 
-        reindex_gallery()
 
         response = self.create_response(request, res)
         return response
