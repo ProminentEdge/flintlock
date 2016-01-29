@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import View
-
+from django.contrib.auth import logout as auth_logout
+from django.shortcuts import redirect
 
 class ForgotUsername(View):
     form_class = ForgotUsernameForm
@@ -29,3 +30,11 @@ class ForgotUsername(View):
                                user.email)
             return HttpResponseRedirect(reverse('username_sent'))
         return render(request, self.template_name, {'form': form})
+
+
+def logout(request):
+    """
+    Logs out the user.
+    """
+    auth_logout(request)
+    return redirect('/')

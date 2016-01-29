@@ -124,6 +124,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.template.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
     "vida.vida_core.context_processors.third_party_tracking_ids",
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -169,7 +171,8 @@ INSTALLED_APPS = (
     'storages',
     'widget_tweaks',
     'vida.tasks',
-    'registration'
+    'registration',
+    'social.apps.django_app.default'
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
@@ -244,3 +247,12 @@ EMAIL_PORT = os.getenv('EMAIL_PORT', 25)
 EMAIL_SUBJECT_PREFIX = '[VIDA] '
 SERVER_EMAIL = os.getenv('SERVER_EMAIL', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', '')
+
+AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', '')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', '')
