@@ -1,10 +1,13 @@
+from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
+from django.db.models import signals
+from django.utils import timezone
 from geopy.geocoders import GoogleV3
 from geopy.exc import GeocoderQuotaExceeded
 from jsonfield import JSONField
 from time import sleep
-from django.utils import timezone
+from tastypie.models import create_api_key
 
 
 class RecentlyUpdatedMixin(models.Model):
@@ -86,3 +89,6 @@ class Address(models.Model):
         verbose_name_plural = "Addresses"
         unique_together = ("address_line1", "address_line2", "postal_code",
                            "city", "state_province", "country")
+
+
+signals.post_save.connect(create_api_key, sender=User)

@@ -37,6 +37,13 @@ class CoreTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue('login' in response.url)
 
+    def test_create_api_key(self):
+        """
+        Ensure api keys get generated for new users.
+        """
+        user = User.objects.get(id=1)
+        self.assertTrue(user.api_key)
+
     def test_recently_updated(self):
         """
         Tests the Recently Updated Mixin.

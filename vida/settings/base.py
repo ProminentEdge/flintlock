@@ -172,7 +172,8 @@ INSTALLED_APPS = (
     'widget_tweaks',
     'vida.tasks',
     'registration',
-    'social.apps.django_app.default'
+    'social.apps.django_app.default',
+    'tastypie'
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
