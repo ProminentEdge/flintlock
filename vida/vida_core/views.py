@@ -1,12 +1,72 @@
 from .forms import ForgotUsernameForm
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-from django.views.generic import View
+from django.views.generic import View, TemplateView
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
+from tastypie.models import ApiKey
+
+
+class LoginRequiredMixin(object):
+    """
+    Requires users to be logged in before rendering a view.
+    """
+
+    @classmethod
+    def as_view(cls, **initkwargs):
+        view = super(LoginRequiredMixin, cls).as_view(**initkwargs)
+        return login_required(view)
+
+
+class JSONResponseMixin(object):
+    """
+    A mixin that can be used to render a JSON response.
+    """
+    def render_to_json_response(self, context, **response_kwargs):
+        """
+        Returns a JSON response, transforming 'context' to make the payload.
+        """
+        return JsonResponse(
+            self.get_data(context),
+            **response_kwargs
+        )
+
+    def get_data(self, context):
+        """
+        Returns an object that will be serialized as JSON by json.dumps().
+        """
+        return context
+
+
+class JSONView(JSONResponseMixin, TemplateView):
+    def render_to_response(self, context, **response_kwargs):
+        return self.render_to_json_response(context, **response_kwargs)
+
+
+class AuthorizeView(LoginRequiredMixin, JSONView):
+    """
+    GET request returns the user's username and api key.
+    """
+
+    def get_context_data(self, **kwargs):
+
+        try:
+            api_key = self.request.user.api_key.key
+        except ObjectDoesNotExist:
+            ApiKey.objects.create(user=self.request.user)
+            api_key = self.request.user.api_key.key
+
+        return {'username': self.request.user.username,
+                'apikey': api_key}
+
+    def render_to_response(self, context, **response_kwargs):
+        return self.render_to_json_response(context, **response_kwargs)
+
 
 class ForgotUsername(View):
     form_class = ForgotUsernameForm
@@ -38,3 +98,6 @@ def logout(request):
     """
     auth_logout(request)
     return redirect('/')
+
+
+

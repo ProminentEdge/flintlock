@@ -1,5 +1,5 @@
 from .models import RecentlyUpdatedMixin
-
+import json
 from datetime import timedelta
 from urlparse import urlsplit, urlunsplit
 from django.contrib.auth import get_user_model, authenticate
@@ -43,6 +43,23 @@ class CoreTests(TestCase):
         """
         user = User.objects.get(id=1)
         self.assertTrue(user.api_key)
+
+    def test_authorize_view(self):
+        """
+        Ensure api keys get generated for new users.
+        """
+
+        c = Client()
+        response = c.get(reverse('authorize-mobile'))
+        self.assertEqual(response.status_code, 302)
+
+        c.login(username='tester_mcgee', password='test')
+        response = c.get(reverse('authorize-mobile'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('application/json', response.get('content-type'))
+        js = json.dumps(response.content)
+        self.assertIn('apikey', js)
+        self.assertIn('username', js)
 
     def test_recently_updated(self):
         """

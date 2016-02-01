@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
 from .vida_core.forms import VIDAPasswordResetForm
-from .vida_core.views import ForgotUsername, logout
+from .vida_core.views import ForgotUsername, logout, AuthorizeView
 from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
 from .vida.api import PersonResource, ShelterResource, TrackResource, FormResource, ReportResource
 from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView, CommonOperatingPicture
@@ -55,6 +55,7 @@ urlpatterns = patterns('',
     url(r'^persons/(?P<pk>[0-9]+)/$', PersonDetailView.as_view(), name='persons_detail'),
     url(r'^shelters/(?P<pk>[0-9]+)/$', ShelterDetailView.as_view(), name='shelter_detail'),
     url(r'^common-operating-picture/$', CommonOperatingPicture.as_view(), name='cop'),
+    url(r'^mobile/authorize/$', AuthorizeView.as_view(), name='authorize-mobile'),
     url('', include('social.apps.django_app.urls', namespace='social'))
 )
 
