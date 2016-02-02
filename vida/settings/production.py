@@ -33,22 +33,17 @@ CACHES = {
     }
 }
 
-AWS_STORAGE_BUCKET_NAME = 'vida-static'
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME', 'flintlock-static')
 COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-COMPRESS_URL = "https://s3.amazonaws.com/vida-static/"
+COMPRESS_URL = os.getenv('COMPRESS_URL', 'https://s3.amazonaws.com/flintlock-static/flintlock-static')
 COMPRESS_STORAGE = "vida.utils.CachedS3BotoStorage"
 STATICFILES_STORAGE = "vida.utils.CachedS3BotoStorage"
 STATIC_URL = COMPRESS_URL
 DEBUG = False
 AWS_QUERYSTRING_AUTH = False
-EMAIL_USE_TLS=True
+EMAIL_USE_TLS = True
 
 CELERYBEAT_SCHEDULE = {
-    # Executes nightly at midnight.
-    'cache_every_midnight': {
-        'task': 'tasks.cache.cache_histogram_data',
-        'schedule': crontab(),
-    },
 }
 
 try:
