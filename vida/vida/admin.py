@@ -4,9 +4,9 @@ import uuid
 import helpers
 
 class TrackAdmin(admin.ModelAdmin):
-    fields = ['user', 'entity_type', 'force_type', 'geom']
-    list_display = ('user', 'timestamp', 'entity_type', 'force_type', 'geom')
-    search_fields = ['user', 'timestamp', 'entity_type', 'force_type', 'geom']
+    fields = ['user', 'mayday', 'geom']
+    list_display = ('user', 'timestamp', 'mayday', 'geom')
+    search_fields = ['user', 'timestamp', 'mayday', 'geom']
     readonly_fields = ('timestamp',)
 
 admin.site.register(Track, TrackAdmin)

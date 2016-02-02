@@ -9,22 +9,22 @@ class Track(models.Model):
     """
     A device can report its location which is referred to as a Track by the application.
     """
-    ENTITY_TYPE_CHOICES = [
-        (0, 'Unknown'),
-        (1, 'Person'),
-        (2, 'Vehicle')]
-
-    FORCE_TYPE_CHOICES = [
-        (0, 'Unknown'),
-        (1, 'Blue'),
-        (2, 'Red'),
-        (3, 'Green')]
+    #ENTITY_TYPE_CHOICES = [
+    #    (0, 'Unknown'),
+    #    (1, 'Person'),
+    #    (2, 'Vehicle')]
+    #FORCE_TYPE_CHOICES = [
+    #    (0, 'Unknown'),
+    #    (1, 'Blue'),
+    #    (2, 'Red'),
+    #    (3, 'Green')]
+    #entity_type = models.IntegerField(null=False, blank=False, choices=ENTITY_TYPE_CHOICES, default=0)
+    #force_type = models.IntegerField(null=False, blank=False, choices=FORCE_TYPE_CHOICES, default=0)
 
     #user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     user = models.CharField(blank=True, null=False, max_length=50)
+    mayday = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
-    entity_type = models.IntegerField(null=False, blank=False, choices=ENTITY_TYPE_CHOICES, default=0)
-    force_type = models.IntegerField(null=False, blank=False, choices=FORCE_TYPE_CHOICES, default=0)
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
 
     def __unicode__(self):

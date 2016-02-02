@@ -32,7 +32,7 @@ class TrackResource(ModelResource):
 
     class Meta:
         queryset = Track.objects.all()
-        fields = ['user', 'entity_type', 'force_type', 'geom']
+        fields = ['user', 'mayday', 'geom']
         include_resource_uri = False
         allowed_methods = ['get', 'post', 'put']
         always_return_data = True
