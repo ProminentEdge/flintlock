@@ -1,0 +1,36 @@
+<div class="report-dialog">
+    <div class="modal-header">
+        <h3 class="modal-title">{{ form.schema.title }}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="input-group" ng-if="propName !== 'photos' && prop.type !== 'array'" ng-repeat="(propName, prop) in form.schema.properties">
+            <span class="input-group-addon">{{propName}}</span>
+
+            <input ng-if="prop.type === 'string' && !prop.enum" class="form-control" type="text" placeholder="{{prop.description}}" ng-model="report[propName]"/>
+
+            <select ng-if="prop.enum" id="injury" class="form-control" ng-model="report[propName]">
+                <option value="" > -- choose -- </option>>
+                <option ng-repeat="item in prop.enum" >{{ item }}</option>
+            </select>
+
+            <input ng-if="prop.type === 'datetime'" class="form-control" type="datetime-local" ng-model="report[propName]"/>
+            <a ng-if="prop.description" tooltip="{{prop.description}}" tooltip-animation="false" tooltip-placement="right" class="info-tooltip input-group-addon glyphicon glyphicon-info-sign"></a>
+        </div>
+
+        <label class="item item-input" ng-if="hasMedia()">
+            <span class="input-label">{{getMediaPropName()}}:</span>
+            <button ng-click="showCameraModal()" style="" class="button icon ion-camera"></button>
+        </label>
+        <ul>
+            <li ng-repeat="mediaHash in report[getMediaPropName()]">
+                <img style="max-width: 250px"
+                    ng-src="{{mediaPendingUploadMap[mediaHash]}}"
+                    err-src="{{peopleService.getPlaceholderImage()}}"/>
+            </li>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

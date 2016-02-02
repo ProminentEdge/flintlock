@@ -1,0 +1,47 @@
+<div class="btn-group" dropdown is-open="status.isopen">
+  <button id="single-button" ng-disabled="!ready" type="button" class="form-button btn btn-primary" dropdown-toggle>
+    Create Reports <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu" aria-labelledby="single-button">
+    <li ng-repeat="form in forms" role="menuitem">
+        <div class="panel form-panel">
+            <div class="form-title ellipsis">{{ form.schema.title }} </div> <span ng-click="createReport(form)" class="glyphicon glyphicon-pencil form-button pull-right"></span><span ng-click="createReportGeo(form)" class="glyphicon glyphicon-map-marker form-button pull-right"></span>
+        </div>
+    </li>
+  </ul>
+  <button ng-if="selectLocationCancel !== null" ng-click="selectLocationCancel()" class="form-button btn btn-danger">
+      Cancel Report Location Select
+  </button>
+
+<!--<div id="pulldown" ng-controller="PulldownController">
+    <div id="pulldown-shadow">
+      <div class="panel flat" id="map-title">
+        <div class="panel-heading">
+          <em id="map-name">
+            <div class="title-text">Create Report</div>
+          </em>
+        </div>
+      </div>
+      <div id="pulldown-menu" class="panel-group in">
+        <div id="pulldown-content">
+          <div class="panel">
+            <div class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
+                 data-target="#layer-manager-panel">
+              <span translate="map_layers">Map Layers</span>
+              <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#add-layer-dialog')"
+                   tooltip-placement="top" tooltip="{{'add_layer_btn' | translate}}" tooltip-append-to-body="true"
+                   class="glyphicon glyphicon-plus-sign panel-header-button pull-right"></div>
+              <div id="server-loading" class="loom-loading pull-right" spinner-radius="20" spinner-width="3" spinner-hidden="!serversLoading"></div>
+            </div>
+            <div id="layer-manager-panel" class="panel-collapse collapse pulldown-panel">
+              <div class="loom-layers"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button type="button" data-toggle="collapse" data-target="#pulldown-menu"
+            class="toggle-menu toggle btn btn-default flat-top">Toggle Menu
+    </button>
+  </div>-->
+</div>

@@ -4,6 +4,7 @@
     angular.module('fireStation.mapService', [])
 
     .provider('map', function() {
+        this.map = null;
         this.$get = function($rootScope) {
           return this;
         };
@@ -29,10 +30,10 @@
           };
 
             angular.extend(defaultOptions, options);
-            var map = L.map(div, options);
-            var hash = new L.Hash(map);
-            this.addBaseLayers(map);
-            return map;
+            this.map = L.map(div, options);
+            var hash = new L.Hash(this.map);
+            this.addBaseLayers(this.map);
+            return this.map;
 
         }
   });

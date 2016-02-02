@@ -21,6 +21,10 @@ h2 {
   -webkit-box-shadow: none;
 }
 
+.navbar {
+    z-index: 100;
+}
+
 /*
 The .nav-action class mimics nav-tab links. Only used to avoid href="#"
 which moves the window when the user clicks on the link.
@@ -122,4 +126,54 @@ input.ng-invalid {
     margin-top: -5px;
     color: #605e5e;
     letter-spacing: -1px;
+}
+
+.form-button {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.form-panel {
+    margin: 10px 0px 10px 10px;
+    width: 400px;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.form-title {
+    width: 330px;
+    display: inline-block;
+}
+
+.form-button {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.report-dialog .input-group {
+    margin-bottom: 5px;
+}
+
+.report-dialog .input-group-addon {
+    background: white;
+}
+.report-dialog .form-control {
+    background: white;
+    border: 1px solid lightgray;
+}
+.report-dialog .tooltip-arrow {
+    color: #111;
+}
+.report-dialog .tooltip-inner {
+    background: #111;
+    width:300px;
+}
+.report-dialog .info-tooltip {
+    top: 0;
 }
