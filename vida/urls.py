@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
 from .vida_core.forms import VIDAPasswordResetForm
-from .vida_core.views import ForgotUsername
+from .vida_core.views import ForgotUsername, logout, AuthorizeView
 from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
 from .vida.api import PersonResource, ShelterResource, TrackResource, FormResource, ReportResource
 from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView, CommonOperatingPicture
@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     url(r'^', include('vida.firestation.urls')),
     url(r'^', include('vida.vida.urls')),
     (r'^accounts/', include('registration.backends.default.urls')),
-    url(r'^login/$', 'django.contrib.auth.views.login', name='login', kwargs={'template_name': 'accounts/login.html'}),
+    url(r'^login/$', 'social.apps.django_app.views.auth', name='login', kwargs={'backend': 'google-oauth2'}),
     url(r'^password-reset/$', 'django.contrib.auth.views.password_reset',
         name='password_reset',
         kwargs={'template_name': 'registration/password/password_reset_form.html',
@@ -48,11 +48,14 @@ urlpatterns = patterns('',
         kwargs={'template_name': 'registration/password/password_change_done.html'}),
     url(r'^forgot-username/$', ForgotUsername.as_view(), name='forgot_username'),
     url(r'^forgot-username/done/$', TemplateView.as_view(template_name='registration/username_sent.html'), name='username_sent'),
-    url(r'^logout/$', 'django.contrib.auth.views.logout_then_login', name='logout'),
+    url(r'^logout/$', logout, name='logout'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^autocomplete/', include('autocomplete_light.urls')),
     url(r'^persons/$', PersonIndexView.as_view(), name='persons_list'),
     url(r'^persons/(?P<pk>[0-9]+)/$', PersonDetailView.as_view(), name='persons_detail'),
     url(r'^shelters/(?P<pk>[0-9]+)/$', ShelterDetailView.as_view(), name='shelter_detail'),
     url(r'^common-operating-picture/$', CommonOperatingPicture.as_view(), name='cop'),
+    url(r'^mobile/authorize/$', AuthorizeView.as_view(), name='authorize-mobile'),
+    url('', include('social.apps.django_app.urls', namespace='social'))
 )
+
