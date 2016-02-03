@@ -41,7 +41,7 @@ class VidaTests(TestCase):
         u.set_password('test')
         u.save()
         payload =  {
-        "data": "{'test':123}",
+        "data": {"test": 123},
         "form": None,
         "geom": "SRID=4326;POINT (0.0000000000000000 0.0000000000000000)",
         "timestamp": "2016-02-03T08:35:39.968849"
@@ -69,3 +69,28 @@ class VidaTests(TestCase):
         payload = json.loads(response.content)
         rep = Report.objects.get(id=payload['id'])
         self.assertEqual(rep.notes.first().author, u)
+
+    def test_api_json(self):
+        u = User.objects.create(username='test')
+        u.set_password('test')
+        u.save()
+        payload =  {
+        "data": {"test": 123},
+        "form": None,
+        "geom": "SRID=4326;POINT (0.0000000000000000 0.0000000000000000)",
+        "timestamp": "2016-02-03T08:35:39.968849"
+        }
+
+        c = Client()
+        c.login(username='test', password='test')
+
+        response = c.get('/api/v1/report/')
+        self.assertEqual(response.status_code, 200)
+
+        response = c.post('/api/v1/report/', data=json.dumps(payload), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+
+        response = c.get('/api/v1/report/1/')
+        self.assertEqual(response.status_code, 200)
+        js = json.loads(response.content)
+        self.assertTrue(isinstance(js['data'], dict))

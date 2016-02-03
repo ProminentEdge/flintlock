@@ -78,7 +78,7 @@ class FormResource(ModelResource):
 
 class NoteResource(ModelResource):
     author = fields.ToOneField(UserResource, 'author',  full=True, blank=True, null=True)
-    
+
     class Meta:
         fields = ['id', 'author', 'note', 'created']
         queryset = Note.objects.all()
@@ -86,6 +86,7 @@ class NoteResource(ModelResource):
 class ReportResource(ModelResource):
     form = fields.ForeignKey(FormResource, 'form', null=True)
     notes = fields.ToManyField(NoteResource, 'notes', full=True, null=True, readonly=True)
+    data = fields.DictField(attribute='data', null=True, blank=True)
 
     class Meta:
         queryset = Report.objects.all()

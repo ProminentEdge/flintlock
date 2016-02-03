@@ -4,7 +4,7 @@ import json
 from django.contrib.gis.geos import Point
 import helpers
 from django.db.models.signals import post_init
-
+from jsonfield import JSONField
 
 class Note(models.Model):
 
@@ -114,7 +114,7 @@ class Report(NoteLogger, models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     form = models.ForeignKey('Form', null=True, blank=True)
-    data = models.TextField(null=False, blank=False)
+    data = JSONField(null=False, blank=False)
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='SUBMITTED')
 
