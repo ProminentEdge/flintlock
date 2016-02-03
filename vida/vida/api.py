@@ -16,7 +16,7 @@ import requests, json
 
 from vida.fileservice.helpers import get_gallery_file
 from vida.vida.models import Person
-from vida.vida.models import Shelter, Track, Report, Form
+from vida.vida.models import Shelter, Track, Report, Form, Note
 
 
 
@@ -76,13 +76,20 @@ class FormResource(ModelResource):
 
         return super(ModelResource, self).deserialize(request, data, format)
 
+class NoteResource(ModelResource):
+    author = fields.ToOneField(UserResource, 'author',  full=True, blank=True, null=True)
+    
+    class Meta:
+        fields = ['id', 'author', 'note', 'created']
+        queryset = Note.objects.all()
 
 class ReportResource(ModelResource):
-    form = fields.ForeignKey(FormResource, 'form')
+    form = fields.ForeignKey(FormResource, 'form', null=True)
+    notes = fields.ToManyField(NoteResource, 'notes', full=True, null=True, readonly=True)
 
     class Meta:
         queryset = Report.objects.all()
-        fields = ['user', 'timestamp', 'form', 'data', 'geom']
+        fields = ['id', 'user', 'timestamp', 'form', 'data', 'geom', 'status', 'notes']
         include_resource_uri = False
         allowed_methods = ['get', 'post', 'put']
         always_return_data = True
@@ -91,6 +98,44 @@ class ReportResource(ModelResource):
 
     def determine_format(self, request):
         return 'application/json'
+
+
+    def save(self, bundle, skip_errors=False):
+        if bundle.via_uri:
+            return bundle
+
+        self.is_valid(bundle)
+
+        if bundle.errors and not skip_errors:
+            from tastypie.exceptions import ImmediateHttpResponse
+            raise ImmediateHttpResponse(response=self.error_response(bundle.request, bundle.errors))
+
+        # Check if they're authorized.
+        if bundle.obj.pk:
+            self.authorized_update_detail(self.get_object_list(bundle.request), bundle)
+        else:
+            self.authorized_create_detail(self.get_object_list(bundle.request), bundle)
+
+        # Save FKs just in case.
+        self.save_related(bundle)
+
+        # Save the main object.
+        obj_id = self.create_identifier(bundle.obj)
+
+        if obj_id not in bundle.objects_saved or bundle.obj._state.adding:
+            # FLINTLOCK custom to support tracking who authorized a report
+            bundle.obj.save(author=bundle.request.user)
+            bundle.objects_saved.add(obj_id)
+
+        # Now pick up the M2M bits.
+        m2m_bundle = self.hydrate_m2m(bundle)
+        self.save_m2m(m2m_bundle)
+
+        return bundle
+
+    #def obj_update(self, bundle, skip_errors=False, **kwargs):
+    #    return super(ReportResource, self).obj_update(self, bundle, **kwargs)
+
 
     def deserialize(self, request, data, format=None):
         if not format:

@@ -3,6 +3,56 @@ from django.contrib.gis.db import models
 import json
 from django.contrib.gis.geos import Point
 import helpers
+from django.db.models.signals import post_init
+
+
+class Note(models.Model):
+
+    created = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+    note = models.TextField()
+
+    class Meta:
+        ordering = ['-created']
+
+class NoteLogger(models.Model):
+
+    TRACK_FIELDS = []
+    NOTE_STRING = 'The following fields were updated:<br /><br />'
+
+    notes = models.ManyToManyField(Note, blank=True)
+
+    def add_track_save_note(self, author=None):
+        field_track = {}
+        for field in self.TRACK_FIELDS:
+            value = getattr(self, field)
+            orig_value = getattr(self, '_original_%s' % field)
+            if value != orig_value:
+                field_track[field] = [orig_value, value]
+
+        if field_track:
+            for k, v in field_track.iteritems():
+                note_str = self.NOTE_STRING
+                note_str += ('<b>{field}:</b> <i>{orig_value}</i> '
+                             '<b>&rarr;</b> {value}<br />').format(
+                    field=k,
+                    orig_value=v[0],
+                    value=v[1],
+                )
+
+            note = Note.objects.create(note=note_str, author=author)
+            self.notes.add(note)
+
+    def save(self, *args, **kwargs):
+        add_track = bool(self.pk)
+        author = kwargs.pop('author', None)
+        super(NoteLogger, self).save(*args, **kwargs)
+
+        if add_track:
+            self.add_track_save_note(author=author)
+
+    class Meta:
+        abstract = True
 
 
 class Track(models.Model):
@@ -47,16 +97,39 @@ class Form(models.Model):
         return u'id={}, {}'.format(self.id, title)
 
 
-class Report(models.Model):
+class Report(NoteLogger, models.Model):
     """
     Each report is an 'instance' of a Form. The schema of the form is used to present a form to the user. The data
     filled out by the user becomes a report.
     """
+    TRACK_FIELDS = ('status',)
+    NOTE_STRING = 'The approval status for this report has been changed:<br /><br />'
+
+    STATUS_CHOICES = [
+        ('SUBMITTED', 'SUBMITTED'),
+        ('APPROVED', 'APPROVED'),
+        ('REJECTED', 'REJECTED'),
+    ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     form = models.ForeignKey('Form', null=True, blank=True)
     data = models.TextField(null=False, blank=False)
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
+    status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='SUBMITTED')
+
+
+def timelog_post_init(sender, instance, **kwargs):
+    if instance.pk:
+        for field in instance.TRACK_FIELDS:
+            setattr(instance, '_original_%s' % field, getattr(instance, field))
+
+
+post_init.connect(
+    timelog_post_init,
+    sender=Report,
+    dispatch_uid='vida.signals.timelog_post_init',
+)
 
 
 class Shelter(models.Model):

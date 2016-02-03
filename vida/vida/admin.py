@@ -1,7 +1,17 @@
 from django.contrib import admin
-from vida.vida.models import Person, Shelter, Track, Form, Report
+from vida.vida.models import Person, Shelter, Track, Form, Report, Note
 import uuid
 import helpers
+
+
+class NoteInline(admin.StackedInline):
+    model = Report.notes.through
+    fields = ['note']
+    extra = 0
+
+class NoteAdmin(admin.ModelAdmin):
+    model = Note
+    fields = ['note', 'author', 'created']
 
 class TrackAdmin(admin.ModelAdmin):
     fields = ['user', 'mayday', 'geom']
@@ -17,13 +27,15 @@ class FormAdmin(admin.ModelAdmin):
     search_fields = ['user', 'timestamp', 'schema']
     readonly_fields = ('timestamp',)
 
+admin.site.register(Note, NoteAdmin)
 admin.site.register(Form, FormAdmin)
 
 class ReportAdmin(admin.ModelAdmin):
-    fields = ['user', 'form', 'data', 'geom']
-    list_display = ('user', 'timestamp', 'form', 'data', 'geom')
-    search_fields = ['user', 'timestamp', 'form', 'data', 'geom']
+    fields = ['user', 'form', 'data', 'geom', 'status']
+    list_display = ('user', 'timestamp', 'form', 'data', 'geom', 'status')
+    search_fields = ['user', 'timestamp', 'form', 'data', 'geom', 'status']
     readonly_fields = ('timestamp',)
+    inlines = [NoteInline]
 
 admin.site.register(Report, ReportAdmin)
 
