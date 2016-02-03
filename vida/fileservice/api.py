@@ -1,4 +1,5 @@
-from tastypie.authentication import BasicAuthentication
+from tastypie.authentication import BasicAuthentication, SessionAuthentication, MultiAuthentication, \
+    ApiKeyAuthentication
 from tastypie.authorization import Authorization
 from tastypie.utils import trailing_slash
 from tastypie.bundle import Bundle
@@ -11,8 +12,6 @@ from tastypie import fields
 import helpers
 import os
 import hashlib
-
-
 
 
 class FileItem(object):
@@ -29,7 +28,7 @@ class FileItemResource(Resource):
         include_resource_uri = False
         allowed_methods = ['get', 'post', 'put']
         always_return_data = True
-        authentication = BasicAuthentication()
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
 
     def determine_format(self, request):
