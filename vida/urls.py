@@ -24,7 +24,7 @@ v1_api.register(ReportResource())
 
 
 urlpatterns = patterns('',
-    url(r'^$', Home.as_view(), name='firestation_home'),
+    url(r'^$', CommonOperatingPicture.as_view(), name='firestation_home'),
     (r'^api/', include(v1_api.urls)),
     url(r'^', include('vida.firestation.urls')),
     url(r'^', include('vida.vida.urls')),
@@ -54,8 +54,8 @@ urlpatterns = patterns('',
     url(r'^persons/$', PersonIndexView.as_view(), name='persons_list'),
     url(r'^persons/(?P<pk>[0-9]+)/$', PersonDetailView.as_view(), name='persons_detail'),
     url(r'^shelters/(?P<pk>[0-9]+)/$', ShelterDetailView.as_view(), name='shelter_detail'),
-    url(r'^common-operating-picture/$', CommonOperatingPicture.as_view(), name='cop'),
     url(r'^mobile/authorize/$', AuthorizeView.as_view(), name='authorize-mobile'),
-    url('', include('social.apps.django_app.urls', namespace='social'))
+    url('', include('social.apps.django_app.urls', namespace='social')),
+    url(r'^common-operating-picture/$', CommonOperatingPicture.as_view(), name='cop'),
 )
 
