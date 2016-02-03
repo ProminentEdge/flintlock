@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.utils import trailing_slash
-from tastypie.authentication import BasicAuthentication, Authentication
+from tastypie.authentication import BasicAuthentication, Authentication, SessionAuthentication, MultiAuthentication,\
+    ApiKeyAuthentication
 from tastypie.authorization import Authorization
 from tastypie import fields
 from django.contrib.auth import get_user_model
@@ -36,7 +37,7 @@ class TrackResource(ModelResource):
         include_resource_uri = False
         allowed_methods = ['get', 'post', 'put']
         always_return_data = True
-        authentication = BasicAuthentication()
+        authentication = MultiAuthentication(ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
 
     def determine_format(self, request):
@@ -60,7 +61,7 @@ class FormResource(ModelResource):
         include_resource_uri = True
         allowed_methods = ['get']
         always_return_data = True
-        authentication = BasicAuthentication()
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
 
     def determine_format(self, request):
@@ -85,7 +86,7 @@ class ReportResource(ModelResource):
         include_resource_uri = False
         allowed_methods = ['get', 'post', 'put']
         always_return_data = True
-        authentication = BasicAuthentication()
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
 
     def determine_format(self, request):
@@ -145,7 +146,7 @@ class PersonResource(ModelResource):
 
         queryset = Person.objects.all()
         excludes = ['start_date', 'stop_date']
-        authentication = BasicAuthentication()
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
         filtering = {
             'family_name': ALL,
@@ -287,7 +288,7 @@ class ShelterResource(ModelResource):
 
     class Meta:
         queryset = Shelter.objects.all()
-        authentication = BasicAuthentication()
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
 
     def determine_format(self, request):
         return 'application/json'
