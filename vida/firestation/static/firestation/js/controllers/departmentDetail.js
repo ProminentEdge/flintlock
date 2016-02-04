@@ -3,7 +3,7 @@
 (function() {
     angular.module('fireStation.departmentDetailController', [])
 
-    .controller('jurisdictionController', function($scope, $http, Tracks, Report, map, $interval) {
+    .controller('jurisdictionController', function($scope, $http, LatestTracks, Report, map, $interval) {
           var departmentMap = map.initMap('map', {scrollWheelZoom: false});
           var config = {centroid:  L.latLng(38.90, -77.0164)};
           var showTracks = true;
@@ -22,7 +22,7 @@
             }
 
           function updateTracks() {
-            Tracks.query().$promise.then(function(data) {
+            LatestTracks.query().$promise.then(function(data) {
                  $scope.tracks = data.objects;
 
                   var tracksMarkers = [];

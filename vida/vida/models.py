@@ -142,6 +142,10 @@ class Report(NoteLogger, models.Model):
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='SUBMITTED')
     objects = models.GeoManager()
 
+
+    class Meta:
+        get_latest_by = 'timestamp'
+
 def timelog_post_init(sender, instance, **kwargs):
     if instance.pk:
         for field in instance.TRACK_FIELDS:

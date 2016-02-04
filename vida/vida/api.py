@@ -33,7 +33,7 @@ class TrackResource(ModelResource):
     #user = fields.ToOneField(UserResource, 'user',  full=True, blank=False, null=False)
 
     class Meta:
-        queryset = Track.objects.all()
+        queryset = Track.objects.all().order_by('user', '-timestamp').distinct('user')
         fields = ['id', 'user', 'mayday', 'geom', 'timestamp']
         include_resource_uri = False
         allowed_methods = ['get', 'post', 'put', 'delete']
@@ -52,6 +52,14 @@ class TrackResource(ModelResource):
             return request.POST
 
         return super(ModelResource, self).deserialize(request, data, format)
+
+
+class LatestTrack(TrackResource):
+
+    class Meta(TrackResource.Meta):
+        resource_name = 'latest-tracks'
+        queryest = Track.objects.all().order_by('user', '-timestamp').distinct('user')
+        allowed_methods = ['get']
 
 
 class FormResource(ModelResource):

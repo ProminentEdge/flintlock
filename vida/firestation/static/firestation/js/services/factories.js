@@ -10,6 +10,13 @@
             });
     })
 
+    .factory('LatestTracks', function ($resource) {
+        return $resource('/api/v1/latest-tracks/:id/', {},
+            {query: { method: 'GET', isArray: false},
+             update: {method: 'PUT'}
+            });
+    })
+
     .factory('Report', function ($resource) {
         return $resource('/api/v1/report/:id/', {},
             {query: { method: 'GET', isArray: true,
