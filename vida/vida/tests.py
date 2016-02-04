@@ -61,17 +61,13 @@ class VidaTests(TestCase):
         response = c.post('/api/v1/report/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(response.status_code, 201)
 
-        response = c.get('/api/v1/report/')
-
-        payload = json.loads(response.content)['objects'][0]
+        payload = json.loads(response.content)
         payload['status'] = 'APPROVED'
 
         response = c.put('/api/v1/report/{id}/'.format(id=payload['id']),
                          data=json.dumps(payload), content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
-
-        response = c.get('/api/v1/report/{id}/'.format(id=payload['id']))
         payload = json.loads(response.content)
         rep = Report.objects.get(id=payload['id'])
         self.assertEqual(rep.notes.first().author, u)
@@ -132,6 +128,10 @@ class VidaTests(TestCase):
 
         response = c.post('/api/v1/report/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(response.status_code, 201)
+
+        # ensure the object is returned
+        payload = json.loads(response.content)
+        self.assertTrue(payload['id'])
 
         note =  {
         "note": "testing post",

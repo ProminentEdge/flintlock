@@ -104,6 +104,7 @@ class NoteResource(ModelResource):
         queryset = Note.objects.all()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
+        always_return_data = True
 
     def determine_format(self, request):
         return 'application/json'
