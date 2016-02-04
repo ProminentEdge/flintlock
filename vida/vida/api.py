@@ -41,6 +41,10 @@ class TrackResource(ModelResource):
         always_return_data = True
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
+        filtering = {
+            'modified': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
+            'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
+        }
 
     def determine_format(self, request):
         return 'application/json'
@@ -67,12 +71,16 @@ class FormResource(ModelResource):
 
     class Meta:
         queryset = Form.objects.all()
-        fields = ['user', 'timestamp', 'schema', 'color']
+        fields = ['user', 'timestamp', 'schema', 'color', 'modified']
         include_resource_uri = True
         allowed_methods = ['get']
         always_return_data = True
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
+        filtering = {
+            'modified': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
+            'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
+        }
 
     def hydrate_user(self, bundle):
         """
@@ -100,11 +108,15 @@ class NoteResource(ModelResource):
     author = fields.ToOneField(UserResource, 'author',  full=True, blank=True, null=True)
 
     class Meta:
-        fields = ['id', 'author', 'note', 'created']
+        fields = ['id', 'author', 'note', 'created', 'modified']
         queryset = Note.objects.all()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
         always_return_data = True
+        filtering = {
+            'modified': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
+            'created': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
+        }
 
     def determine_format(self, request):
         return 'application/json'
@@ -140,12 +152,17 @@ class ReportResource(ModelResource):
 
     class Meta:
         queryset = Report.objects.all()
-        fields = ['id', 'user', 'timestamp', 'form', 'data', 'geom', 'status', 'notes']
+        fields = ['id', 'user', 'modified', 'timestamp', 'form', 'data', 'geom', 'status', 'notes']
         include_resource_uri = False
         allowed_methods = ['get', 'post', 'put']
         always_return_data = True
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
+        filtering = {
+            'modified': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
+            'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
+        }
+
 
     def hydrate_user(self, bundle):
         """

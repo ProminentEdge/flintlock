@@ -9,6 +9,7 @@ from jsonfield import JSONField
 class Note(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     note = models.TextField()
 
@@ -75,6 +76,7 @@ class Track(models.Model):
     user = models.CharField(blank=True, null=False, max_length=50)
     mayday = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
     objects = models.GeoManager()
 
@@ -109,6 +111,7 @@ class Form(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     schema = models.TextField(null=False, blank=False)
     color = models.CharField(max_length=10, choices=COLOR_CHOICES, blank=True, null=True, verbose_name='Map icon color')
 
@@ -136,6 +139,7 @@ class Report(NoteLogger, models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     form = models.ForeignKey('Form', null=True, blank=True)
     data = JSONField(null=False, blank=False)
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
