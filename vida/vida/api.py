@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
+from tastypie.resources import ALL, ALL_WITH_RELATIONS
 from tastypie.utils import trailing_slash
 from tastypie.authentication import BasicAuthentication, Authentication, SessionAuthentication, MultiAuthentication,\
     ApiKeyAuthentication
@@ -8,6 +8,7 @@ from tastypie import fields
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from tastypie.resources import Resource
+from tastypie.contrib.gis.resources import ModelResource
 
 import helpers
 import os
@@ -33,9 +34,9 @@ class TrackResource(ModelResource):
 
     class Meta:
         queryset = Track.objects.all()
-        fields = ['user', 'mayday', 'geom']
+        fields = ['id', 'user', 'mayday', 'geom', 'timestamp']
         include_resource_uri = False
-        allowed_methods = ['get', 'post', 'put']
+        allowed_methods = ['get', 'post', 'put', 'delete']
         always_return_data = True
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()

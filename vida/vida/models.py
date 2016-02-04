@@ -76,6 +76,7 @@ class Track(models.Model):
     mayday = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
+    objects = models.GeoManager()
 
     def __unicode__(self):
         return unicode(self.user)
@@ -139,7 +140,7 @@ class Report(NoteLogger, models.Model):
     data = JSONField(null=False, blank=False)
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='SUBMITTED')
-
+    objects = models.GeoManager()
 
 def timelog_post_init(sender, instance, **kwargs):
     if instance.pk:
@@ -178,6 +179,7 @@ class Shelter(models.Model):
     notes = models.TextField(blank=True)
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
     uuid = models.CharField(blank=False, max_length=100)
+    objects = models.GeoManager()
 
     def __unicode__(self):
         return self.name

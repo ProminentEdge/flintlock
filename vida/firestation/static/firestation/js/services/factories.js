@@ -3,16 +3,15 @@
 (function() {
     angular.module('fireStation.factories', ['ngResource'])
 
-    .factory('FireStation', function ($resource) {
-        return $resource('/api/v1/firestations/:id/', {}, {'query': {'method': 'GET', isArray: false}});
+    .factory('Tracks', function ($resource) {
+        return $resource('/api/v1/track/:id/', {},
+            {query: { method: 'GET', isArray: false},
+             update: {method: 'PUT'}
+            });
     })
 
-    .factory('FireDepartment', function ($resource) {
-        return $resource('/api/v1/fire-departments/:id/', {}, {'query': {'method': 'GET', isArray: false}});
-    })
-
-    .factory('Staffing', function ($resource) {
-        return $resource('/api/v1/staffing/:id/', {},
+    .factory('Report', function ($resource) {
+        return $resource('/api/v1/report/:id/', {},
             {query: { method: 'GET', isArray: true,
                 transformResponse: function (jsondata) {
                     return JSON.parse(jsondata).objects;
