@@ -85,9 +85,31 @@ class Form(models.Model):
     """
     A data-driver way of creating a form. the schema describes the fields, their types, order, etc of the form
     """
+
+    COLOR_CHOICES = (
+        ('#001F3F', 'Navy'),
+        ('#0074D9', 'Blue'),
+        ('#7FDBFF', 'Aqua'),
+        ('#39CCCC', 'Teal'),
+        ('#3D9970', 'Olive'),
+        ('#2ECC40', 'Green'),
+        ('#01FF70', 'Lime'),
+        ('#FFDC00', 'Yellow'),
+        ('#FF851B', 'Orange'),
+        ('#FF4136', 'Red'),
+        ('#F012BE', 'Fuchsia'),
+        ('#B10DC9', 'Purple'),
+        ('#85144B', 'Maroon'),
+        ('#FFFFFF', 'White'),
+        ('#DDDDDD', 'Silver'),
+        ('#AAAAAA', 'Gray'),
+        ('#111111', 'Black')
+    )
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     schema = models.TextField(null=False, blank=False)
+    color = models.CharField(max_length=10, choices=COLOR_CHOICES, blank=True, null=True, verbose_name='Map icon color')
 
     def __unicode__(self):
         schema_dict = json.loads(self.schema)

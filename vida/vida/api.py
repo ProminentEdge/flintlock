@@ -57,7 +57,7 @@ class FormResource(ModelResource):
 
     class Meta:
         queryset = Form.objects.all()
-        fields = ['user', 'timestamp', 'schema']
+        fields = ['user', 'timestamp', 'schema', 'color']
         include_resource_uri = True
         allowed_methods = ['get']
         always_return_data = True

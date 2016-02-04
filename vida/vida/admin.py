@@ -22,9 +22,9 @@ class TrackAdmin(admin.ModelAdmin):
 admin.site.register(Track, TrackAdmin)
 
 class FormAdmin(admin.ModelAdmin):
-    fields = ['user', 'schema']
-    list_display = ('user', 'timestamp', 'schema')
-    search_fields = ['user', 'timestamp', 'schema']
+    fields = ['user', 'schema', 'color']
+    list_display = ('user', 'timestamp', 'schema', 'color')
+    search_fields = ['user', 'timestamp', 'schema', 'color']
     readonly_fields = ('timestamp',)
 
 admin.site.register(Note, NoteAdmin)
