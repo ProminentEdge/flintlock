@@ -3,6 +3,7 @@
 (function() {
   angular.module('fireStation', [
       'ngResource',
+      'ngTable',
       'ui.bootstrap',
       'fireStation.factories',
       'fireStation.homeController',
@@ -11,11 +12,13 @@
       'fireStation.mapService',
       'fireStation.shelterService',
       'fireStation.formService',
+      'fireStation.reportService',
       'fireStation.gauge',
       'fireStation.search',
       'fireStation.graphs',
       'fireStation.forms',
-      'fireStation.report'
+      'fireStation.report',
+      'fireStation.reportList'
   ])
 
   .config(function($interpolateProvider, $httpProvider, $resourceProvider) {

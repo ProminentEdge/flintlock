@@ -1,0 +1,54 @@
+<div ng-if="reports && reports.length > 0" class="report-list">
+    <button type="button" class="btn btn-primary" ng-click="refreshReports()">
+        Refresh Reports
+    </button>
+    <table ng-table="tableParams" class="table table-bordered table-striped">
+        <tr>
+            <th ng-repeat="col in columns"
+                class="text-left sortable header observation-header {{ col.class }}" ng-class="{
+                        'sort-asc': tableParams.isSortBy(col.field, 'asc'),
+                        'sort-desc': tableParams.isSortBy(col.field, 'desc')
+                      }"
+                ng-click="tableParams.sorting(col.field, tableParams.isSortBy(col.field, 'desc') ? 'asc' : 'desc')">
+                <div>{{col.title}}</div>
+            </th>
+        </tr>
+        <tbody>
+            <tr ng-repeat="report in $data">
+                <td data-title="'Location'" align="center" class="location-column" sortable="'geom'">
+                    <span ng-if="report.geom !== null" ng-click="goToLocation(report)" class="glyphicon glyphicon-map-marker"></span>
+                </td>
+                <td data-title="'Form'" filter="{ formTitle: 'text'}" sortable="'formTitle'">
+                    {{report.formTitle}}
+                </td>
+                <!--<td data-title="'User'" sortable="'user'">
+                    {{report.user}}
+                </td> -->
+                <td data-title="'Timestamp'" sortable="'timestamp'">
+                    {{formatTimestamp(report.timestamp)}}
+                </td>
+                <td data-title="'Status'" sortable="'status'">
+                    {{report.status}}
+                </td>
+                <td data-title="'View'">
+                    <button type="button" class="btn btn-primary full-width" ng-click="viewReport(report)">View Report</button>
+                </td>
+            </tr>
+        </tbody>
+        <!--<tr ng-repeat="report in $data">
+
+            <td title="'Location'" class="location-column" sortable="'geom'">
+                <span ng-if="report.geom" class="glyphicon glyphicon-map-marker"></span>
+            </td>
+            <td title="'Form'" filter="{ form: 'text'}" sortable="'form'">
+                {{report.form}}
+            </td>
+            <td title="'User'" sortable="'user'">
+                {{report.user}}
+            </td>
+            <td title="'Timestamp'" sortable="'timestamp'">
+                {{report.timestamp}}
+            </td>
+        </tr>-->
+    </table>
+</div>

@@ -166,7 +166,7 @@
         <div class="container">
             <div class="ct-u-displayTableVertical">
                 <div class="ct-textBox ct-u-text--white ct-u-displayTableCell text-left">
-                    <h2>Common Operating Picture</h2>
+                    <h2>Reports</h2>
                     <h4>Flintlock 2016</h4>
                 </div>
                 <div class="ct-u-displayTableCell text-right">
@@ -184,11 +184,10 @@
                 <div class="col-md-8 col-lg-9">
                     <div class="ct-u-displayTableVertical">
                         <div class="ct-u-displayTableCell text-left">
-                            <i class="fa fa-clock-o"></i><h6>Last Updated: {[lastUpdated]}</h6>
+                            <i class="fa fa-clock-o"></i><h6>Last Updated: {% now "jS F Y H:i" %}</h6>
                         </div>
                         <div class="ct-u-displayTableCell text-right">
                             <a href="" ng-click="toggleFullScreenMap()"><i class="fa fa-arrows-alt"></i> View Fullscreen Map</a>
-                            <a href="" style="padding-left: 15px" ng-click="zoomToTracksLayer()"><i class="fa fa-map-pin"></i> Zoom to tracks</a>
                         </div>
                     </div>
                 </div>
@@ -198,18 +197,6 @@
             </div>
         </div>
         <div class="ct-section--products">
-            <div class="row">
-                <div class="col-md-6 col-lg-6" style="z-index: 1001">
-                    <forms-list></forms-list>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 col-lg-12">
-                    <div class="ct-gallery">
-                        <div id="map"></div>
-                    </div>
-                </div>
-            </div>
             <div class="row">
                 <div class="col-md-12 col-lg-12">
                     <report-list></report-list>

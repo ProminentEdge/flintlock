@@ -7,6 +7,7 @@
 
     .provider('formService', function() {
         var forms = null;
+        var formsRequest = null;
         this.$get = function($q, $http) {
           q_ = $q;
           http_ = $http;
@@ -14,22 +15,36 @@
         };
 
         this.getForms = function(forceUpdate) {
-          var deferredResponse = q_.defer();
+          if (formsRequest) {
+            return formsRequest.promise;
+          }
+          formsRequest = q_.defer();
           if (forms === null || forceUpdate) {
             http_.get('/api/v1/form').then(function(response) {
               forms = response.data.objects;
               forms.forEach(function(form) {
                 form.schema = JSON.parse(form.schema);
               });
-              deferredResponse.resolve(forms);
+              formsRequest.resolve(forms);
             }, function(error) {
-              deferredResponse.reject(error);
+              formsRequest.reject(error);
             });
           } else {
-            deferredResponse.resolve(forms);
+            formsRequest.resolve(forms);
           }
-          return deferredResponse.promise;
+          return formsRequest.promise;
         };
+
+        this.getFormByURI = function(formURI) {
+          if (forms) {
+            for (var i = 0; i < forms.length; i++) {
+              if (forms[i].resource_uri === formURI) {
+                return forms[i];
+              }
+            }
+          }
+          return null;
+        }
   });
 
 

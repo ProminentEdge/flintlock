@@ -108,6 +108,9 @@ class PersonIndexView(generic.ListView):
 class CommonOperatingPicture(generic.base.TemplateView):
     template_name = 'vida/cop.html'
 
+class Reports(generic.base.TemplateView):
+    template_name = 'vida/reports.html'
+
 class PersonDetailView(generic.DetailView):
     model = Person
     template_name = 'vida/person_detail.html'

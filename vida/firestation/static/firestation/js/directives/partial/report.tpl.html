@@ -6,14 +6,14 @@
         <div class="input-group" ng-if="propName !== 'photos' && prop.type !== 'array'" ng-repeat="(propName, prop) in form.schema.properties">
             <span class="input-group-addon">{{propName}}</span>
 
-            <input ng-if="prop.type === 'string' && !prop.enum" class="form-control" type="text" placeholder="{{prop.description}}" ng-model="report[propName]"/>
+            <input ng-if="prop.type === 'string' && !prop.enum" class="form-control" type="text" placeholder="{{prop.description}}" ng-model="report.data[propName]"/>
 
-            <select ng-if="prop.enum" id="injury" class="form-control" ng-model="report[propName]">
+            <select ng-if="prop.enum" id="injury" class="form-control" ng-model="report.data[propName]">
                 <option value="" > -- choose -- </option>>
                 <option ng-repeat="item in prop.enum" >{{ item }}</option>
             </select>
 
-            <input ng-if="prop.type === 'datetime'" class="form-control" type="datetime-local" ng-model="report[propName]"/>
+            <input ng-if="prop.type === 'datetime'" class="form-control" type="datetime-local" ng-model="report.data[propName]"/>
             <a ng-if="prop.description" tooltip="{{prop.description}}" tooltip-animation="false" tooltip-placement="right" class="info-tooltip input-group-addon glyphicon glyphicon-info-sign"></a>
         </div>
 
@@ -22,12 +22,38 @@
             <button ng-click="showCameraModal()" style="" class="button icon ion-camera"></button>
         </label>
         <ul>
-            <li ng-repeat="mediaHash in report[getMediaPropName()]">
+            <li ng-repeat="mediaHash in report.data[getMediaPropName()]">
                 <img style="max-width: 250px"
                     ng-src="{{mediaPendingUploadMap[mediaHash]}}"
                     err-src="{{peopleService.getPlaceholderImage()}}"/>
             </li>
         </ul>
+        <div class="input-group" ng-if="showStatus">
+            <span class="input-group-addon">Status</span>
+            <select class="form-control" ng-model="report.status">
+                <option>SUBMITTED</option>
+                <option>APPROVED</option>
+                <option>REJECTED</option>
+            </select>
+        </div>
+        <div ng-if="showStatus">
+            Notes
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="note in report.notes">
+                  <div class="input-group">
+                    <span class="input-group-addon">{{ note.author.username }}</span>
+                    <span class="input-group-addon note-timestamp">{{ formatTimestamp(note.created) }}</span>
+                  </div>
+                  <div ng-bind-html="getHtml(note.note)"></div>
+              </li>
+            </ul>
+            <div class="input-group">
+                <span class="input-group-addon">Add Note</span>
+                <input class="form-control" type="text" ng-model="context.noteField"/>
+                <a class="info-tooltip input-group-addon glyphicon glyphicon-comment" ng-click="addNote()"></a>
+            </div>
+        </div>
+
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>

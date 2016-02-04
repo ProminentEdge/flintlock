@@ -4,7 +4,7 @@
   var module = angular.module('fireStation.forms', []);
 
   module.directive('formsList',
-      function($http, formService, $modal, map) {
+      function($http, formService, reportService, map) {
         return {
           restrict: 'E',
           replace: true,
@@ -37,7 +37,13 @@
               };
               var pickPoint = function(e) {
                 scope.selectLocationCancel();
-                scope.createReport(form, "SRID=4326;POINT (" + e.latlng.lng + " " + e.latlng.lat + ")");
+                scope.createReport(form, {
+                  coordinates: [
+                    e.latlng.lng,
+                    e.latlng.lat
+                  ],
+                  type: 'Point'
+                });
               };
               scope.selectLocationCancel = function() {
                 map.map.off('click', pickPoint);
@@ -58,21 +64,19 @@
             };
 
             scope.createReport = function(form, geom) {
-              var modalScope = scope.$new();
-              modalScope.form = form;
-              modalScope.report = {};
-              modalScope.geom = geom;
-              var modalInstance = $modal.open({
-                animation: true,
-                backdrop: 'static',
-                template: '<report-dialog></report-dialog>',
-                scope: modalScope
-              });
-
-              modalInstance.result.then(function () {
-              }, function () {
-                console.log('Modal dismissed at: ' + new Date());
-              });
+              if (!geom) {
+                geom = {
+                  coordinates: [0, 0],
+                  type: 'Point'
+                };
+              }
+              reportService.viewReport({
+                timestamp_local: new Date(),
+                data: {},
+                geom: geom,
+                form: form.resource_uri,
+                status: 'SUBMITTED'
+              }, false);
             };
           }
         };

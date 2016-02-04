@@ -26,8 +26,8 @@ class NoteLogger(models.Model):
         field_track = {}
         for field in self.TRACK_FIELDS:
             value = getattr(self, field)
-            orig_value = getattr(self, '_original_%s' % field)
-            if value != orig_value:
+            orig_value = getattr(self, '_original_%s' % field, None)
+            if value != orig_value and orig_value:
                 field_track[field] = [orig_value, value]
 
         if field_track:
@@ -145,6 +145,7 @@ class Report(NoteLogger, models.Model):
 
     class Meta:
         get_latest_by = 'timestamp'
+        ordering = ("-timestamp",)
 
 def timelog_post_init(sender, instance, **kwargs):
     if instance.pk:

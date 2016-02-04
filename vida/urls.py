@@ -6,7 +6,7 @@ from .vida_core.views import ForgotUsername, logout, AuthorizeView
 from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
 from .vida.api import PersonResource, ShelterResource, TrackResource, FormResource, ReportResource, LatestTrack, \
     NoteResource
-from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView, CommonOperatingPicture
+from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView, CommonOperatingPicture, Reports
 from fileservice.api import FileItemResource
 from tastypie.api import Api
 from firestation.views import Home
@@ -60,5 +60,6 @@ urlpatterns = patterns('',
     url(r'^mobile/authorize/$', AuthorizeView.as_view(), name='authorize-mobile'),
     url('', include('social.apps.django_app.urls', namespace='social')),
     url(r'^common-operating-picture/$', CommonOperatingPicture.as_view(), name='cop'),
+    url(r'^reports/$', Reports.as_view(), name='reports')
 )
 
