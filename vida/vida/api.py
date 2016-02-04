@@ -85,12 +85,30 @@ class FormResource(ModelResource):
 
         return super(ModelResource, self).deserialize(request, data, format)
 
+
 class NoteResource(ModelResource):
     author = fields.ToOneField(UserResource, 'author',  full=True, blank=True, null=True)
 
     class Meta:
         fields = ['id', 'author', 'note', 'created']
         queryset = Note.objects.all()
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
+        authorization = Authorization()
+
+    def save(self, bundle, skip_errors=False):
+        bundle = super(NoteResource, self).save(bundle, skip_errors=False)
+
+        report = bundle.data.get('report__id')
+
+        if report:
+            try:
+                report_obj = Report.objects.get(id=report)
+                bundle.obj.report_set.add(report_obj)
+            except Report.DoesNotExist:
+                return bundle
+
+        return bundle
+
 
 class ReportResource(ModelResource):
     form = fields.ForeignKey(FormResource, 'form', null=True)
@@ -108,7 +126,6 @@ class ReportResource(ModelResource):
 
     def determine_format(self, request):
         return 'application/json'
-
 
     def save(self, bundle, skip_errors=False):
         if bundle.via_uri:

@@ -4,7 +4,8 @@ from django.views.generic import TemplateView
 from .vida_core.forms import VIDAPasswordResetForm
 from .vida_core.views import ForgotUsername, logout, AuthorizeView
 from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
-from .vida.api import PersonResource, ShelterResource, TrackResource, FormResource, ReportResource, LatestTrack
+from .vida.api import PersonResource, ShelterResource, TrackResource, FormResource, ReportResource, LatestTrack, \
+    NoteResource
 from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView, CommonOperatingPicture
 from fileservice.api import FileItemResource
 from tastypie.api import Api
@@ -20,6 +21,7 @@ v1_api.register(ShelterResource())
 v1_api.register(FileItemResource())
 v1_api.register(TrackResource())
 v1_api.register(LatestTrack())
+v1_api.register(NoteResource())
 v1_api.register(FormResource())
 v1_api.register(ReportResource())
 
