@@ -77,7 +77,7 @@
           var startPolling = function() {
               stop = $interval(function() {
                 updateTracks()
-              }, 5000);
+              }, 30000);
           };
 
           updateTracks();
