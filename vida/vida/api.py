@@ -21,6 +21,7 @@ from vida.vida.models import Shelter, Track, Report, Form, Note
 
 
 
+
 class UserResource(ModelResource):
     class Meta:
         queryset = get_user_model().objects.all()
@@ -73,6 +74,15 @@ class FormResource(ModelResource):
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
 
+    def hydrate_user(self, bundle):
+        """
+        Set's the form's user to the user making the request.
+        """
+        if not bundle.obj.user:
+            bundle.obj.user = bundle.request.user.username
+
+        return bundle
+
     def determine_format(self, request):
         return 'application/json'
 
@@ -94,6 +104,15 @@ class NoteResource(ModelResource):
         queryset = Note.objects.all()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
+
+    def hydrate_author(self, bundle):
+        """
+        Set's the note's author to the user making the request.
+        """
+        if not bundle.obj.author:
+            bundle.obj.author = bundle.request.user
+
+        return bundle
 
     def save(self, bundle, skip_errors=False):
         bundle = super(NoteResource, self).save(bundle, skip_errors=False)
@@ -123,6 +142,15 @@ class ReportResource(ModelResource):
         always_return_data = True
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
+
+    def hydrate_user(self, bundle):
+        """
+        Set's the report's user to the user making the request.
+        """
+        if not bundle.obj.user:
+            bundle.obj.user = bundle.request.user.username
+
+        return bundle
 
     def determine_format(self, request):
         return 'application/json'

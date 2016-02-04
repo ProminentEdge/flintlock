@@ -142,3 +142,4 @@ class VidaTests(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Note.objects.last().note, note['note'])
         self.assertIn(Report.objects.first(), Note.objects.last().report_set.all())
+        self.assertEqual(Note.objects.last().author, u)
