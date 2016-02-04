@@ -37,7 +37,7 @@ class TrackResource(ModelResource):
         include_resource_uri = False
         allowed_methods = ['get', 'post', 'put']
         always_return_data = True
-        authentication = MultiAuthentication(ApiKeyAuthentication(), BasicAuthentication())
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
 
     def determine_format(self, request):
