@@ -105,6 +105,9 @@ class NoteResource(ModelResource):
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
 
+    def determine_format(self, request):
+        return 'application/json'
+
     def hydrate_author(self, bundle):
         """
         Set's the note's author to the user making the request.
