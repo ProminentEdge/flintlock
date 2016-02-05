@@ -13,17 +13,39 @@
                 <div>{{col.title}}</div>
             </th>
         </tr>
+        <tr class="ng-table-filters">
+            <th></th>
+            <th>
+                <select class="form-control" ng-model="filters.formTitle">
+                    <option value="">-- All --</option>
+                    <option ng-repeat="form in forms">{{ form.schema.title }}</option>
+                </select>
+            </th>
+            <th>
+                <input class="form-control" type="text" ng-model="filters.user"/>
+            </th>
+            <th></th>
+            <th>
+                <select class="form-control" ng-model="filters.status">
+                    <option value="">-- All --</option>
+                    <option value="SUBMITTED">SUBMITTED</option>
+                    <option value="APPROVED">APPROVED</option>
+                    <option value="REJECTED">REJECTED</option>
+                </select>
+            </th>
+            <th></th>
+        </tr>
         <tbody>
-            <tr ng-repeat="report in $data">
+            <tr ng-repeat="report in $data | filter:filters:strict">
                 <td data-title="'Location'" align="center" class="location-column" sortable="'geom'">
                     <span ng-if="report.geom !== null" ng-click="goToLocation(report)" class="glyphicon glyphicon-map-marker"></span>
                 </td>
                 <td data-title="'Form'" filter="{ formTitle: 'text'}" sortable="'formTitle'">
                     {{report.formTitle}}
                 </td>
-                <!--<td data-title="'User'" sortable="'user'">
+                <td data-title="'User'" sortable="'user'">
                     {{report.user}}
-                </td> -->
+                </td>
                 <td data-title="'Timestamp'" sortable="'timestamp'">
                     {{formatTimestamp(report.timestamp)}}
                 </td>
@@ -35,20 +57,5 @@
                 </td>
             </tr>
         </tbody>
-        <!--<tr ng-repeat="report in $data">
-
-            <td title="'Location'" class="location-column" sortable="'geom'">
-                <span ng-if="report.geom" class="glyphicon glyphicon-map-marker"></span>
-            </td>
-            <td title="'Form'" filter="{ form: 'text'}" sortable="'form'">
-                {{report.form}}
-            </td>
-            <td title="'User'" sortable="'user'">
-                {{report.user}}
-            </td>
-            <td title="'Timestamp'" sortable="'timestamp'">
-                {{report.timestamp}}
-            </td>
-        </tr>-->
     </table>
 </div>

@@ -219,12 +219,38 @@ input.ng-invalid {
     min-width: 10px;
 }
 
+.report-dialog .img-thumbnail {
+    background-image: url(/static/images/photo-512.png);
+    background-size: 75%;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-width: 100%;
+    min-height: 100px;
+}
+
+.report-dialog .thumbnail-container {
+    max-width: 200px;
+    display: inline-block;
+}
+
+.modal {
+    background-color: rgba(0,0,0,0.25);
+}
+
 .full-width {
     width: 100%;
 }
 
 .location-column {
     width: 50px;
+}
+
+.status-column {
+    width: 150px;
+}
+
+.view-column {
+    width: 150px;
 }
 
 .form-column {
@@ -235,4 +261,11 @@ input.ng-invalid {
     font-size: 24px;
     top: 6px;
     cursor: pointer;
+}
+
+.report-list .form-control {
+    background: white;
+    border: 1px solid lightgray;
+    font-weight: 100;
+    color: black;
 }

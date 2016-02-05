@@ -31,7 +31,13 @@
                 reports.forEach(function(report) {
                   var form = formService_.getFormByURI(report.form);
                   report.formTitle = form ? form.schema.title : report.form;
-                  //report.data = JSON.parse(report.data.replace('u\'', '\'').replace('None', null));
+                  for (var prop in form.schema.properties) {
+                    if (form.schema.properties.hasOwnProperty(prop) &&
+                        form.schema.properties[prop].type === 'datetime' &&
+                        report.data[prop]) {
+                      report.data[prop] = new Date(report.data[prop]);
+                    }
+                  }
                 });
                 deferredResponse.resolve(reports);
               }, function(error) {

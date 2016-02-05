@@ -32,18 +32,35 @@
                 note: scope.context.noteField,
                 report__id: scope.report.id
               };
-              $http.post('/api/v1/note/', JSON.stringify(payload)).then(function() {
-                scope.report.notes.unshift({
-                  author: {
-                    username: 'admin'
-                  },
-                  created: new Date().toISOString(),
-                  note: scope.context.noteField
-                });
+              $http.post('/api/v1/note/', JSON.stringify(payload)).then(function(note) {
+                scope.report.notes.unshift(note.data);
                 scope.context.noteField = '';
               }, function(error) {
                 console.log('Failed to post note: ', error);
               });
+            };
+            scope.getMediaProp = function() {
+              for (var prop in scope.form.schema.properties) {
+                if (scope.form.schema.properties.hasOwnProperty(prop) && prop.toLowerCase() === 'photos') {
+                  return prop;
+                }
+              }
+              return null;
+            };
+            var mediaProp = scope.getMediaProp();
+            scope.photos = [];
+            if (mediaProp && scope.report.data[mediaProp]) {
+              scope.report.data[mediaProp].forEach(function(photo) {
+                scope.photos.push({
+                  url: '/api/v1/fileservice/' + photo + '/view',
+                  thumbUrl: '/api/v1/fileservice/' + photo + '/view'
+                });
+              });
+            }
+
+            scope.openPhoto = function (photo) {
+              var win = window.open(photo.url, '_blank');
+              win.focus();
             };
 
             scope.formatTimestamp = function(timestamp) {

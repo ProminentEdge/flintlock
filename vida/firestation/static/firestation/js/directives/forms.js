@@ -30,7 +30,11 @@
             };
 
             scope.createReportGeo = function(form) {
-              var marker = new L.marker(new L.LatLng(0, 0)).addTo(map.map);
+              var icon = L.VectorMarkers.icon({
+                icon: 'circle',
+                markerColor: form.color
+              });
+              var marker = new L.marker(new L.LatLng(0, 0), {icon: icon}).addTo(map.map);
               scope.ready = false;
               var updateMarker = function(e) {
                 marker.setLatLng(e.latlng)
@@ -64,12 +68,6 @@
             };
 
             scope.createReport = function(form, geom) {
-              if (!geom) {
-                geom = {
-                  coordinates: [0, 0],
-                  type: 'Point'
-                };
-              }
               reportService.viewReport({
                 timestamp_local: new Date(),
                 data: {},

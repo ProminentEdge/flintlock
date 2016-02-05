@@ -8,6 +8,7 @@
     .provider('formService', function() {
         var forms = null;
         var formsRequest = null;
+        var formURIMap = {};
         this.$get = function($q, $http) {
           q_ = $q;
           http_ = $http;
@@ -24,6 +25,11 @@
               forms = response.data.objects;
               forms.forEach(function(form) {
                 form.schema = JSON.parse(form.schema);
+                form.icon = L.VectorMarkers.icon({
+                  icon: 'circle',
+                  markerColor: form.color
+                });
+                formURIMap[form.resource_uri] = form;
               });
               formsRequest.resolve(forms);
             }, function(error) {
@@ -36,14 +42,7 @@
         };
 
         this.getFormByURI = function(formURI) {
-          if (forms) {
-            for (var i = 0; i < forms.length; i++) {
-              if (forms[i].resource_uri === formURI) {
-                return forms[i];
-              }
-            }
-          }
-          return null;
+          return formURIMap[formURI];
         }
   });
 
