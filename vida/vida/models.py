@@ -1,10 +1,46 @@
 from django.conf import settings
 from django.contrib.gis.db import models
 import json
-from django.contrib.gis.geos import Point
-import helpers
-from django.db.models.signals import post_init
+from django.db.models.signals import post_init, post_save
 from jsonfield import JSONField
+from django.contrib.auth.models import User
+
+RED = getattr(settings, 'RED_COLOR', '#FF4136')
+GREEN = getattr(settings, 'GREEN_COLOR', '#2ECC40')
+BLUE = getattr(settings, 'BLUE_COLOR', '#0074D9')
+
+
+class Profile(models.Model):
+
+    FORCE_CHOICES = (
+        ('FRIENDLY', 'FRIENDLY'),
+        ('OTHER', 'OTHER'),
+        ('ENEMY', 'ENEMY'),
+    )
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    force_type = models.CharField(max_length=40, choices=FORCE_CHOICES, default='FRIENDLY')
+
+    @property
+    def force_color(self):
+
+        if self.force_type == 'ENEMY':
+            return RED
+
+        if self.force_type == 'OTHER':
+            return GREEN
+
+        return BLUE
+
+def create_profile(sender, instance, **kwargs):
+
+    if kwargs["created"]:
+        user = instance
+        profile = Profile(user=user)
+        profile.save()
+
+post_save.connect(create_profile, sender=User)
+
 
 class Note(models.Model):
 
@@ -60,20 +96,8 @@ class Track(models.Model):
     """
     A device can report its location which is referred to as a Track by the application.
     """
-    #ENTITY_TYPE_CHOICES = [
-    #    (0, 'Unknown'),
-    #    (1, 'Person'),
-    #    (2, 'Vehicle')]
-    #FORCE_TYPE_CHOICES = [
-    #    (0, 'Unknown'),
-    #    (1, 'Blue'),
-    #    (2, 'Red'),
-    #    (3, 'Green')]
-    #entity_type = models.IntegerField(null=False, blank=False, choices=ENTITY_TYPE_CHOICES, default=0)
-    #force_type = models.IntegerField(null=False, blank=False, choices=FORCE_TYPE_CHOICES, default=0)
 
-    #user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
-    user = models.CharField(blank=True, null=False, max_length=50)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     mayday = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -82,6 +106,13 @@ class Track(models.Model):
 
     def __unicode__(self):
         return unicode(self.user)
+
+    @property
+    def force_color(self):
+        if not self.user:
+            return BLUE
+
+        return self.user.profile.force_color
 
 
 class Form(models.Model):

@@ -14,6 +14,7 @@ import helpers
 import os
 import requests, json
 
+User = get_user_model()
 
 from vida.fileservice.helpers import get_gallery_file
 from vida.vida.models import Person
@@ -24,17 +25,38 @@ from vida.vida.models import Shelter, Track, Report, Form, Note
 
 class UserResource(ModelResource):
     class Meta:
-        queryset = get_user_model().objects.all()
-        fields = ['username', 'first_name', 'last_name']
+        queryset = User.objects.all()
+        fields = ['id', 'username', 'first_name', 'last_name']
         resource_name = 'user'
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
+        authorization = Authorization()
 
 
-class TrackResource(ModelResource):
-    #user = fields.ForeignKey(UserResource, 'user')
-    #user = fields.ToOneField(UserResource, 'user',  full=True, blank=False, null=False)
+class VidaUserMixin(ModelResource):
+    user = fields.ToOneField(UserResource, 'user',  full=True, blank=True, null=True)
+
+    def hydrate(self, bundle):
+        if isinstance(bundle.data.get('user'), dict):
+            bundle.data['user'] = bundle.request.user
+
+        elif isinstance(bundle.data.get('user'), unicode):
+            try:
+                bundle.data['user'] = User.objects.get(username=bundle.data.get('user'))
+            except User.DoesNotExist:
+                pass
+
+        elif not bundle.data.get('user'):
+            bundle.data['user'] = bundle.request.user
+
+        return super(VidaUserMixin, self).hydrate(bundle)
+
+
+class TrackResource(VidaUserMixin):
+
+    force_color = fields.CharField(attribute='force_color', blank=True, null=True, readonly=True)
 
     class Meta:
-        queryset = Track.objects.all().order_by('user', '-timestamp').distinct('user')
+        queryset = Track.objects.all()
         fields = ['id', 'user', 'mayday', 'geom', 'timestamp']
         include_resource_uri = False
         allowed_methods = ['get', 'post', 'put', 'delete']
@@ -67,7 +89,7 @@ class LatestTrack(TrackResource):
         allowed_methods = ['get']
 
 
-class FormResource(ModelResource):
+class FormResource(VidaUserMixin):
 
     class Meta:
         queryset = Form.objects.all()
@@ -81,15 +103,6 @@ class FormResource(ModelResource):
             'modified': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
             'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
         }
-
-    def hydrate_user(self, bundle):
-        """
-        Set's the form's user to the user making the request.
-        """
-        if not bundle.obj.user:
-            bundle.obj.user = bundle.request.user.username
-
-        return bundle
 
     def determine_format(self, request):
         return 'application/json'
@@ -145,7 +158,7 @@ class NoteResource(ModelResource):
         return bundle
 
 
-class ReportResource(ModelResource):
+class ReportResource(VidaUserMixin):
     form = fields.ForeignKey(FormResource, 'form', null=True)
     notes = fields.ToManyField(NoteResource, 'notes', full=True, null=True, readonly=True)
     data = fields.DictField(attribute='data', null=True, blank=True)
@@ -162,16 +175,6 @@ class ReportResource(ModelResource):
             'modified': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
             'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
         }
-
-
-    def hydrate_user(self, bundle):
-        """
-        Set's the report's user to the user making the request.
-        """
-        if not bundle.obj.user:
-            bundle.obj.user = bundle.request.user.username
-
-        return bundle
 
     def determine_format(self, request):
         return 'application/json'
@@ -208,9 +211,6 @@ class ReportResource(ModelResource):
         self.save_m2m(m2m_bundle)
 
         return bundle
-
-    #def obj_update(self, bundle, skip_errors=False, **kwargs):
-    #    return super(ReportResource, self).obj_update(self, bundle, **kwargs)
 
 
     def deserialize(self, request, data, format=None):

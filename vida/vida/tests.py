@@ -9,7 +9,7 @@ from django.core.management import call_command
 from django.core.urlresolvers import reverse, resolve
 from django.test import Client, TestCase
 from django.utils import timezone
-from .models import Report, Note
+from .models import Report, Note, BLUE, Track
 User = get_user_model()
 
 
@@ -62,7 +62,9 @@ class VidaTests(TestCase):
         self.assertEqual(response.status_code, 201)
 
         payload = json.loads(response.content)
+        self.assertIn('user', payload)
         payload['status'] = 'APPROVED'
+
 
         response = c.put('/api/v1/report/{id}/'.format(id=payload['id']),
                          data=json.dumps(payload), content_type='application/json')
@@ -102,6 +104,7 @@ class VidaTests(TestCase):
         self.assertEqual(response.status_code, 200)
         js = json.loads(response.content)
         self.assertTrue(isinstance(js['data'], dict))
+        self.assertEqual(js['user']['username'], 'test')
 
     def test_note_api(self):
         u = User.objects.create(username='test')
@@ -143,3 +146,43 @@ class VidaTests(TestCase):
         self.assertEqual(Note.objects.last().note, note['note'])
         self.assertIn(Report.objects.first(), Note.objects.last().report_set.all())
         self.assertEqual(Note.objects.last().author, u)
+
+    def test_force_type(self):
+        user = User.objects.create(username='test')
+        user.set_password('test')
+        user.save()
+
+        self.assertTrue(user.profile)
+        self.assertEqual(user.profile.force_type, 'FRIENDLY')
+        self.assertEqual(user.profile.force_color, BLUE)
+
+    def test_tracks_api(self):
+        user = User.objects.create(username='test')
+        user.set_password('test')
+        user.save()
+
+        c = Client()
+        c.login(username='test', password='test')
+
+        response = c.get('/api/v1/track/')
+        self.assertEqual(response.status_code, 200)
+
+
+        payload = {
+            "geom": {
+                "coordinates": [
+                    -77.3344,
+                    38.799
+                ],
+                "type": "Point"
+            },
+            "mayday": False,
+            "timestamp": "2016-02-04T09:24:21.453610",
+            "user": "test"
+        }
+
+        response = c.post('/api/v1/track/', data=json.dumps(payload), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        js = json.loads(response.content)
+        self.assertEqual(js['user']['username'], user.username)
+        self.assertEqual(js['force_color'], BLUE)
