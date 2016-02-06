@@ -8,7 +8,7 @@ from multi_email_field.fields import MultiEmailField
 from django.template import Template, Context
 from django.template.loader import get_template
 from vida.tasks.email import send_email
-
+from django.utils.functional import cached_property
 
 RED = getattr(settings, 'RED_COLOR', '#FF4136')
 GREEN = getattr(settings, 'GREEN_COLOR', '#2ECC40')
@@ -152,6 +152,13 @@ class Form(models.Model):
     color = models.CharField(max_length=10, choices=COLOR_CHOICES, blank=True, null=True, verbose_name='Map icon color')
     emails = MultiEmailField(null=True, blank=True)
 
+    @cached_property
+    def title(self):
+        try:
+            schema = json.loads(self.schema)
+            return schema.get('title', '<no title>')
+        except TypeError:
+            return
 
     def __unicode__(self):
         schema_dict = json.loads(self.schema)
@@ -200,11 +207,12 @@ def timelog_post_init(sender, instance, **kwargs):
 
 
 def send_report_emails(sender, instance, created, **kwargs):
-    subject = 'Report Submitted'
+    form_type = getattr(instance.form, 'title', 'Report') or 'Report'
+    subject = 'Flintlock 2016: New {0} Submitted'.format(form_type)
     template = 'vida/report_created'
 
     if not created:
-        subject = 'Report Updated'
+        subject = 'Flintlock 2016: {0} #{1} has been updated.'.format(form_type, instance.id)
         template = 'vida/report_updated'
 
     emails = [getattr(instance.user, 'email', None)] + [getattr(note.author, 'email', None) for note in instance.notes.all()]
@@ -215,10 +223,13 @@ def send_report_emails(sender, instance, created, **kwargs):
 
     context = Context({'instance': instance})
 
-    send_email.delay(subject, get_template(template + '.txt').render(context),
-                     settings.SERVER_EMAIL,
-                     [n for n in emails if n], fail_silently=False,
-                     html_message=get_template(template + '.html').render(context))
+    for email in emails:
+        if email:
+            send_email.delay(subject, get_template(template + '.txt').render(context),
+                             settings.SERVER_EMAIL,
+                             [email],
+                             fail_silently=False,
+                             html_message=get_template(template + '.html').render(context))
 
 
 post_init.connect(

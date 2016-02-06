@@ -214,4 +214,5 @@ class VidaTests(TestCase):
 
         form = Form.objects.create(emails='test@aol.com', schema=schema, color='#FF4136')
         report = Report.objects.create(data={"test": 123}, form=form, geom=Point(-77.234, 39.23432), user=user)
-        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 2)
+        print mail.outbox[0].message()
