@@ -207,7 +207,7 @@ def send_report_emails(sender, instance, created, **kwargs):
         subject = 'Report Updated'
         template = 'vida/report_updated'
 
-    emails = [getattr(instance.user, 'email', None)] + [note.author.email for note in instance.notes.all()]
+    emails = [getattr(instance.user, 'email', None)] + [getattr(note.author, 'email', None) for note in instance.notes.all()]
 
     if instance.form and instance.form.emails:
         emails += instance.form.emails
