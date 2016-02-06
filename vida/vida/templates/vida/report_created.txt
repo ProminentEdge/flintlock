@@ -1,0 +1,3 @@
+A new report has been submitted by {{instance.user.first_name}} {{instance.user.last_name}} ({{instance.user.email}}).
+
+You can view Report #{{instance.id}} at {{instance.url}}.

@@ -173,7 +173,8 @@ INSTALLED_APPS = (
     'vida.tasks',
     'registration',
     'social.apps.django_app.default',
-    'tastypie'
+    'tastypie',
+    'multi_email_field'
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'

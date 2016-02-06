@@ -9,7 +9,9 @@ from django.core.management import call_command
 from django.core.urlresolvers import reverse, resolve
 from django.test import Client, TestCase
 from django.utils import timezone
-from .models import Report, Note, BLUE, Track
+from .models import Report, Note, BLUE, Track, Form
+from django.contrib.gis.geos import Point
+from django.core import mail
 User = get_user_model()
 
 
@@ -186,3 +188,30 @@ class VidaTests(TestCase):
         js = json.loads(response.content)
         self.assertEqual(js['user']['username'], user.username)
         self.assertEqual(js['force_color'], BLUE)
+
+    def test_notification(self):
+        user = User.objects.create(username='test', first_name='first', last_name='last', email='test@aol.com')
+        user.set_password('test')
+        user.save()
+        schema = {
+          "title": "Request For Information (RFI)",
+          "description": "Request For Information",
+          "type": "object",
+          "properties": {
+            "Unit/Outstation": {
+              "type": "string",
+              "enum": [
+                "Bakel",
+                "Thies",
+                "Dakar",
+                "Podor",
+                "Atar"
+              ]
+            }
+          },
+          "required": []
+        }
+
+        form = Form.objects.create(emails='test@aol.com', schema=schema, color='#FF4136')
+        report = Report.objects.create(data={"test": 123}, form=form, geom=Point(-77.234, 39.23432), user=user)
+        self.assertEqual(len(mail.outbox), 1)

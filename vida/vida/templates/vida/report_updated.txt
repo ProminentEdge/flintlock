@@ -1,0 +1,3 @@
+Report #{{instance.id}} has been updated.
+
+You can view the report at {{instance.url}}.

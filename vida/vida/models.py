@@ -4,6 +4,11 @@ import json
 from django.db.models.signals import post_init, post_save
 from jsonfield import JSONField
 from django.contrib.auth.models import User
+from multi_email_field.fields import MultiEmailField
+from django.template import Template, Context
+from django.template.loader import get_template
+from vida.tasks.email import send_email
+
 
 RED = getattr(settings, 'RED_COLOR', '#FF4136')
 GREEN = getattr(settings, 'GREEN_COLOR', '#2ECC40')
@@ -145,6 +150,8 @@ class Form(models.Model):
     modified = models.DateTimeField(auto_now=True)
     schema = models.TextField(null=False, blank=False)
     color = models.CharField(max_length=10, choices=COLOR_CHOICES, blank=True, null=True, verbose_name='Map icon color')
+    emails = MultiEmailField(null=True, blank=True)
+
 
     def __unicode__(self):
         schema_dict = json.loads(self.schema)
@@ -182,10 +189,36 @@ class Report(NoteLogger, models.Model):
         get_latest_by = 'timestamp'
         ordering = ("-timestamp",)
 
+    @property
+    def url(self):
+        return 'http://cop.imagerytool.net/?showReport={0}'.format(self.id)
+
 def timelog_post_init(sender, instance, **kwargs):
     if instance.pk:
         for field in instance.TRACK_FIELDS:
             setattr(instance, '_original_%s' % field, getattr(instance, field))
+
+
+def send_report_emails(sender, instance, created, **kwargs):
+    subject = 'Report Submitted'
+    template = 'vida/report_created'
+
+    if not created:
+        subject = 'Report Updated'
+        template = 'vida/report_updated'
+
+    emails = [getattr(instance.user, 'email', None)] + [note.author.email for note in instance.notes.all()]
+
+    if instance.form and instance.form.emails:
+        emails += instance.form.emails
+        emails += [getattr(instance.form.user, 'email', None)]
+
+    context = Context({'instance': instance})
+
+    send_email.delay(subject, get_template(template + '.txt').render(context),
+                     settings.SERVER_EMAIL,
+                     [n for n in emails if n], fail_silently=False,
+                     html_message=get_template(template + '.html').render(context))
 
 
 post_init.connect(
@@ -194,6 +227,11 @@ post_init.connect(
     dispatch_uid='vida.signals.timelog_post_init',
 )
 
+post_save.connect(
+    send_report_emails,
+    sender=Report,
+    dispatch_uid='vida.signals.send_email',
+)
 
 class Shelter(models.Model):
 
