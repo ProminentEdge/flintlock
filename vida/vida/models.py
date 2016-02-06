@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.gis.db import models
 import json
-from django.db.models.signals import post_init, post_save
+from django.db.models.signals import post_init, post_save, m2m_changed
 from jsonfield import JSONField
 from django.contrib.auth.models import User
 from multi_email_field.fields import MultiEmailField
@@ -53,6 +53,7 @@ class Note(models.Model):
     modified = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     note = models.TextField()
+    notify = models.BooleanField(default=True, null=False, blank=False, editable=False)
 
     class Meta:
         ordering = ['-created']
@@ -82,7 +83,7 @@ class NoteLogger(models.Model):
                     value=v[1],
                 )
 
-            note = Note.objects.create(note=note_str, author=author)
+            note = Note.objects.create(note=note_str, author=author, notify=False)
             self.notes.add(note)
 
     def save(self, *args, **kwargs):
@@ -206,7 +207,24 @@ def timelog_post_init(sender, instance, **kwargs):
             setattr(instance, '_original_%s' % field, getattr(instance, field))
 
 
-def send_report_emails(sender, instance, created, **kwargs):
+def send_report_emails(sender, **kwargs):
+
+    # Only send emails for the post_add action from the m2m sender.
+    if sender == Report.notes.through:
+        if not kwargs.get('action') == 'post_add':
+            return
+
+        if hasattr(kwargs.get('model'), 'notify') and not all(kwargs.get('model').objects.filter(id__in=kwargs['pk_set'])
+                .values_list('notify', flat=True)):
+            return
+
+    instance = kwargs.get('instance')
+
+    if not isinstance(instance, Report):
+        return
+
+    created = kwargs.get('created', False)
+
     form_type = getattr(instance.form, 'title', 'Report') or 'Report'
     subject = 'Flintlock 2016: New {0} Submitted'.format(form_type)
     template = 'vida/report_created'
@@ -223,7 +241,7 @@ def send_report_emails(sender, instance, created, **kwargs):
 
     context = Context({'instance': instance})
 
-    for email in emails:
+    for email in set(emails):
         if email:
             send_email.delay(subject, get_template(template + '.txt').render(context),
                              settings.SERVER_EMAIL,
@@ -242,6 +260,12 @@ post_save.connect(
     send_report_emails,
     sender=Report,
     dispatch_uid='vida.signals.send_email',
+)
+
+m2m_changed.connect(
+    send_report_emails,
+    sender=Report.notes.through,
+    dispatch_uid='vida.signals.send_email_m2m',
 )
 
 class Shelter(models.Model):
