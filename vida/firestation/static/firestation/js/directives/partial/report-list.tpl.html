@@ -22,7 +22,7 @@
                 </select>
             </th>
             <th>
-                <input class="form-control" type="text" ng-model="filters.user"/>
+                <input class="form-control" type="text" ng-model="filters.username"/>
             </th>
             <th></th>
             <th>
@@ -36,15 +36,15 @@
             <th></th>
         </tr>
         <tbody>
-            <tr ng-repeat="report in $data | filter:filters:strict">
+            <tr ng-repeat="report in $data" ng-if="!isFiltered(report)">
                 <td data-title="'Location'" align="center" class="location-column" sortable="'geom'">
                     <span ng-if="report.geom !== null" ng-click="goToLocation(report)" class="glyphicon glyphicon-map-marker"></span>
                 </td>
                 <td data-title="'Form'" filter="{ formTitle: 'text'}" sortable="'formTitle'">
                     {{report.formTitle}}
                 </td>
-                <td data-title="'User'" sortable="'user'">
-                    {{report.user}}
+                <td data-title="'User'" sortable="'user.username'">
+                    {{report.user.username}}
                 </td>
                 <td data-title="'Timestamp'" sortable="'timestamp'">
                     {{formatTimestamp(report.timestamp)}}

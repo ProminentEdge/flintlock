@@ -6,14 +6,14 @@
         <div class="input-group" ng-if="propName !== 'photos' && prop.type !== 'array'" ng-repeat="(propName, prop) in form.schema.properties">
             <span class="input-group-addon">{{propName}}</span>
 
-            <input ng-if="prop.type === 'string' && !prop.enum" class="form-control" type="text" placeholder="{{prop.description}}" ng-model="report.data[propName]"/>
+            <input ng-if="prop.type === 'string' && !prop.enum" ng-disabled="showStatus" class="form-control" type="text" placeholder="{{prop.description}}" ng-model="report.data[propName]"/>
 
-            <select ng-if="prop.enum" id="injury" class="form-control" ng-model="report.data[propName]">
+            <select ng-if="prop.enum" ng-disabled="showStatus" id="injury" class="form-control" ng-model="report.data[propName]">
                 <option value="" > -- choose -- </option>>
                 <option ng-repeat="item in prop.enum" >{{ item }}</option>
             </select>
 
-            <input ng-if="prop.type === 'datetime'" class="form-control" type="datetime-local" ng-model="report.data[propName]"/>
+            <input ng-if="prop.type === 'datetime'" ng-disabled="showStatus" class="form-control" type="datetime-local" ng-model="report.data[propName]"/>
             <a ng-if="prop.description" tooltip="{{prop.description}}" tooltip-animation="false" tooltip-placement="right" class="info-tooltip input-group-addon glyphicon glyphicon-info-sign"></a>
         </div>
 

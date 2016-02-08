@@ -10,7 +10,9 @@
     angular.module('fireStation.reportService', [])
 
     .provider('reportService', function() {
-        var reports = null;
+        this.reports = [];
+        var latestTime = new Date(0);
+        var reportRequest = null;
         this.$get = function($rootScope, $q, $http, $modal, map, formService) {
           q_ = $q;
           http_ = $http;
@@ -21,35 +23,61 @@
           return this;
         };
 
-        this.getReports = function(forceUpdate) {
-          var deferredResponse = q_.defer();
-          if (reports === null || forceUpdate) {
-            formService_.getForms().then(function() {
-              http_.get('/api/v1/report?limit=0').then(function(response) {
-                console.log(response);
-                reports = response.data.objects;
-                reports.forEach(function(report) {
-                  var form = formService_.getFormByURI(report.form);
-                  report.formTitle = form ? form.schema.title : report.form;
-                  for (var prop in form.schema.properties) {
-                    if (form.schema.properties.hasOwnProperty(prop) &&
-                        form.schema.properties[prop].type === 'datetime' &&
-                        report.data[prop]) {
-                      report.data[prop] = new Date(report.data[prop]);
-                    }
-                  }
-                });
-                deferredResponse.resolve(reports);
-              }, function(error) {
-                deferredResponse.reject(error);
-              });
-            }, function(error) {
-              console.log('Unable to load forms:', error);
-            });
-          } else {
-            deferredResponse.resolve(reports);
+        this.getReports = function() {
+          if (reportRequest) {
+            return reportRequest.promise;
           }
-          return deferredResponse.promise;
+          reportRequest = q_.defer();
+          var context = this;
+          formService_.getForms().then(function() {
+            http_.get('/api/v1/report?limit=0&modified__gt=' + latestTime.toISOString()).then(function(response) {
+              response.data.objects.reverse().forEach(function(report) {
+                var modifiedDate = new Date(report.modified);
+                if (modifiedDate > latestTime) {
+                  latestTime = modifiedDate;
+                }
+                context.updateReport(report, true);
+              });
+              reportRequest.resolve(context.reports);
+              rootScope_.$broadcast('reportsUpdated');
+              reportRequest = null;
+            }, function(error) {
+              reportRequest.reject(error);
+              reportRequest = null;
+            });
+          }, function(error) {
+            console.log('Unable to load forms:', error);
+          });
+          return reportRequest.promise;
+        };
+
+        this.updateReport = function(report, suppressBroadcast) {
+          var replaced = false;
+          var context = this;
+          var form = formService_.getFormByURI(report.form);
+          report.formTitle = form ? form.schema.title : report.form;
+          report.modified = new Date(report.modified).toISOString();
+          report.timestamp = new Date(report.timestamp).toISOString();
+          for (var prop in form.schema.properties) {
+            if (form.schema.properties.hasOwnProperty(prop) &&
+                form.schema.properties[prop].type === 'datetime' &&
+                report.data[prop]) {
+              report.data[prop] = new Date(report.data[prop]);
+            }
+          }
+          for (var i = 0; i < context.reports.length; i++) {
+            if (context.reports[i].id === report.id) {
+              context.reports[i] = report;
+              replaced = true;
+              console.log('replaced!');
+            }
+          }
+          if (!replaced) {
+            context.reports.unshift(report);
+          }
+          if (!suppressBroadcast) {
+            rootScope_.$broadcast('reportsUpdated');
+          }
         };
 
         this.viewReport = function(report, showStatus) {

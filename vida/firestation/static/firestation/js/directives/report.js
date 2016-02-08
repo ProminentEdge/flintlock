@@ -4,7 +4,7 @@
   var module = angular.module('fireStation.report', []);
 
   module.directive('reportDialog',
-      function($http, $sce) {
+      function($http, $sce, reportService) {
         return {
           restrict: 'E',
           replace: true,
@@ -18,7 +18,8 @@
               if (scope.showStatus) {
                 postFunc = $http.put;
               }
-              postFunc('/api/v1/report/' + (scope.showStatus ? scope.report.id + '/' : ''), JSON.stringify(scope.report)).then(function() {
+              postFunc('/api/v1/report/' + (scope.showStatus ? scope.report.id + '/' : ''), JSON.stringify(scope.report)).then(function(response) {
+                reportService.updateReport(response.data);
                 scope.$close();
               }, function(error) {
                 console.log('Failed to send report: ', error);

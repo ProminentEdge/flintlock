@@ -4,7 +4,7 @@
   var module = angular.module('fireStation.forms', []);
 
   module.directive('formsList',
-      function($http, formService, reportService, map) {
+      function($http, $rootScope, formService, reportService, map) {
         return {
           restrict: 'E',
           replace: true,
@@ -52,6 +52,7 @@
               scope.selectLocationCancel = function() {
                 map.map.off('click', pickPoint);
                 map.map.off('mousemove', updateMarker);
+                $rootScope.$broadcast('pickingLocationEnd');
                 if (!scope.$$phase) {
                   scope.$apply(function () {
                     scope.ready = true;
@@ -65,12 +66,20 @@
               };
               map.map.on('click', pickPoint);
               map.map.on('mousemove', updateMarker);
+              $rootScope.$broadcast('pickingLocationStart');
             };
 
             scope.createReport = function(form, geom) {
+              var baseData = {};
+              for (var prop in form.schema.properties) {
+                if (form.schema.properties.hasOwnProperty(prop) && form.schema.properties[prop].type === 'datetime') {
+                  baseData[prop] = new Date();
+                }
+              }
               reportService.viewReport({
+                formTitle: form.schema.title,
                 timestamp_local: new Date(),
-                data: {},
+                data: baseData,
                 geom: geom,
                 form: form.resource_uri,
                 status: 'SUBMITTED'
