@@ -87,7 +87,7 @@ class LatestTrack(TrackResource):
 
     class Meta(TrackResource.Meta):
         resource_name = 'latest-tracks'
-        queryest = Track.objects.all().order_by('user', '-timestamp').distinct('user')
+        queryset = Track.objects.filter(user__isnull=False).order_by('user', '-timestamp').distinct('user')
         allowed_methods = ['get']
 
 
