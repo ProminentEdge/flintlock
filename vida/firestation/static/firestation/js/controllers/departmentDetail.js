@@ -30,19 +30,27 @@
                       var markerRadius = 3;
                       var markerConfig = {fillOpacity: .5, color: track.force_color};
                       var user = track.user ? track.user.username : 'Not Specified';
+                      var shouldAnimate = true;
+                      if (moment.now() - moment(track.timestamp) > 1000 * 300 /* 300 seconds */) {
+                        shouldAnimate = false;
+                      }
 
                       var popupText = '<b>User: </b>' + user + '<br/> <b>Time:</b> ' + moment(track.timestamp).format(timeFormat);
 
+                      markerConfig.icon = L.icon.pulse({
+                        iconSize: track.mayday ? [20,20] : [10,10],
+                        color: track.force_color,
+                        pulseColor: track.mayday ? '#FF851B' : track.force_color,
+                        heartbeat: track.mayday ? 0.4 : 1,
+                        animate: shouldAnimate,
+                        border: track.mayday ? '3px solid #FF851B' : '0'
+                      });
+
                       if (track.mayday === true) {
-                        markerConfig.color = '#FF851B';
-                        markerConfig.opacity = '1';
-                        markerConfig.fillOpacity = '.5';
-                        markerRadius = 4;
                         popupText = '<b>Mayday!</b><br/>' + popupText;
                       }
 
-                      var marker = L.circleMarker(track.geom.coordinates.reverse(), markerConfig);
-                      marker.setRadius(markerRadius);
+                      var marker = L.marker(track.geom.coordinates.reverse(), markerConfig);
 
                       marker.bindPopup(popupText);
                       tracksMarkers.push(marker);
