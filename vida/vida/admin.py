@@ -1,5 +1,5 @@
 from django.contrib import admin
-from vida.vida.models import Person, Shelter, Track, Form, Report, Note
+from vida.vida.models import Person, Shelter, Track, Form, Report, Note, Profile
 import uuid
 import helpers
 
@@ -27,8 +27,12 @@ class FormAdmin(admin.ModelAdmin):
     search_fields = ['user', 'timestamp', 'schema', 'color']
     readonly_fields = ('timestamp',)
 
+class ProfileAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Note, NoteAdmin)
 admin.site.register(Form, FormAdmin)
+admin.site.register(Profile, ProfileAdmin)
 
 class ReportAdmin(admin.ModelAdmin):
     fields = ['user', 'form', 'data', 'geom', 'status']

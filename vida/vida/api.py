@@ -83,6 +83,8 @@ class TrackResource(VidaUserMixin):
 
 class LatestTrack(TrackResource):
 
+    force_color = fields.CharField(attribute='force_color', blank=True, null=True, readonly=True)
+
     class Meta(TrackResource.Meta):
         resource_name = 'latest-tracks'
         queryest = Track.objects.all().order_by('user', '-timestamp').distinct('user')

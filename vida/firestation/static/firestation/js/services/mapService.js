@@ -41,6 +41,7 @@
 
             angular.extend(defaultOptions, options);
             this.map = L.map(div, options);
+            this.map.setView([16.636, -13.711], 5);
             var hash = new L.Hash(this.map);
             var baseLayers = this.addBaseLayers(this.map);
             this.layerControl = L.control.layers(baseLayers).addTo(this.map);

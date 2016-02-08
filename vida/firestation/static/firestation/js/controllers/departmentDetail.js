@@ -25,7 +25,7 @@
                   for (var i = 0; i < numTracks; i++) {
                       var track = $scope.tracks[i];
                       var markerRadius = 3;
-                      var markerConfig = {fillOpacity: .5};
+                      var markerConfig = {fillOpacity: .5, color: track.force_color};
                       var user = track.user ? track.user.username : 'Not Specified';
 
                       var popupText = '<b>User: </b>' + user + '<br/> <b>Time:</b> ' + moment(track.timestamp).format(timeFormat);
