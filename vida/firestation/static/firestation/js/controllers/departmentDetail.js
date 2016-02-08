@@ -5,13 +5,8 @@
 
     .controller('jurisdictionController', function($scope, $http, LatestTracks, Report, map, $interval) {
           var departmentMap = map.initMap('map', {scrollWheelZoom: false});
-          var config = {centroid:  L.latLng(38.90, -77.0164)};
-          var showTracks = true;
           var timeFormat = 'MMMM Do YYYY, hh:mm:ss';
-          var stationIcon = L.VIDAMarkers.firestationmarker();
-          var headquartersIcon = L.VIDAMarkers.headquartersmarker();
           var fitBoundsOptions = {};
-          var layersControl = L.control.layers().addTo(departmentMap);
           var tracksLayer, stop;
 
           $scope.tracks = [];
@@ -30,8 +25,10 @@
                   for (var i = 0; i < numTracks; i++) {
                       var track = $scope.tracks[i];
                       var markerRadius = 3;
-                      var markerConfig = {};
-                      var popupText = '<b>User: </b>' + track.user + '<br/> <b>Time:</b> ' + moment(track.timestamp).format(timeFormat);
+                      var markerConfig = {fillOpacity: .5};
+                      var user = track.user ? track.user.username : 'Not Specified';
+
+                      var popupText = '<b>User: </b>' + user + '<br/> <b>Time:</b> ' + moment(track.timestamp).format(timeFormat);
 
                       if (track.mayday === true) {
                         markerConfig.color = '#FF851B';
@@ -51,21 +48,15 @@
 				 if (numTracks > 0) {
                     if (angular.isDefined(tracksLayer) === true) {
                         departmentMap.removeLayer(tracksLayer);
-                        layersControl.removeLayer(tracksLayer);
+                        map.layerControl.removeLayer(tracksLayer);
                     }
                     tracksLayer = L.featureGroup(tracksMarkers);
                     tracksLayer.addTo(departmentMap);
-                    layersControl.addOverlay(tracksLayer, 'GPS Tracks');
-
-					if (config.geom === null) {
-						departmentMap.fitBounds(tracksLayer.getBounds(), fitBoundsOptions);
-					}
+                    map.layerControl.addOverlay(tracksLayer, 'GPS Tracks');
 			     }
                  setUpdateTime();
               });
           };
-
-          departmentMap.setView(config.centroid, 13);
 
           var stopPolling = function() {
               if (angular.isDefined(stop)) {
