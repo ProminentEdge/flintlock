@@ -3,14 +3,17 @@
 (function() {
     angular.module('fireStation.departmentDetailController', [])
 
-    .controller('jurisdictionController', function($scope, $http, LatestTracks, Report, map, $interval) {
+    .controller('jurisdictionController', function($scope, $http, LatestTracks, Report, map, $interval, reportService, formService, Form) {
           var departmentMap = map.initMap('map', {scrollWheelZoom: false});
           var timeFormat = 'MMMM Do YYYY, hh:mm:ss';
           var fitBoundsOptions = {};
+          var queryDict = {};
           var tracksLayer, stop;
 
           $scope.tracks = [];
           $scope.lastUpdated = moment().format(timeFormat);
+
+          location.search.substr(1).split("&").forEach(function(item) {queryDict[item.split("=")[0]] = item.split("=")[1]});
 
           function setUpdateTime() {
                 $scope.lastUpdated = moment().format(timeFormat);
@@ -76,6 +79,18 @@
 
            $scope.zoomToTracksLayer = function () {
                departmentMap.fitBounds(tracksLayer.getBounds(), fitBoundsOptions);
+           };
+
+           if (queryDict.hasOwnProperty('showReport') === true) {
+              Report.query({id: queryDict.showReport}).$promise.then(function(data) {
+                  var re = /^\/api\/v1\/form\/(\d+)\/$/;
+
+                  Form.query({id: data.form.match(re)[1]}).$promise.then(function(form){
+                      formService.processForm(form)
+                      reportService.updateReport(data, true);
+                      reportService.viewReport(data, true);
+                  });
+              });
            };
 
           /*

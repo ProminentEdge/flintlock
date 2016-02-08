@@ -15,7 +15,17 @@
           return this;
         };
 
+        this.processForm = function(form) {
+          form.schema = JSON.parse(form.schema);
+          form.icon = L.VectorMarkers.icon({
+            icon: 'circle',
+            markerColor: form.color
+          });
+          formURIMap[form.resource_uri] = form;
+        };
+
         this.getForms = function(forceUpdate) {
+          var context = this;
           if (formsRequest) {
             return formsRequest.promise;
           }
@@ -24,12 +34,7 @@
             http_.get('/api/v1/form').then(function(response) {
               forms = response.data.objects;
               forms.forEach(function(form) {
-                form.schema = JSON.parse(form.schema);
-                form.icon = L.VectorMarkers.icon({
-                  icon: 'circle',
-                  markerColor: form.color
-                });
-                formURIMap[form.resource_uri] = form;
+                context.processForm(form);
               });
               formsRequest.resolve(forms);
             }, function(error) {

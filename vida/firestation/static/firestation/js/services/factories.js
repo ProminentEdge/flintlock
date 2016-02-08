@@ -19,12 +19,15 @@
 
     .factory('Report', function ($resource) {
         return $resource('/api/v1/report/:id/', {},
-            {query: { method: 'GET', isArray: true,
-                transformResponse: function (jsondata) {
-                    return JSON.parse(jsondata).objects;
-                }
-            },
-                update: {method: 'PUT'}
+            {query: { method: 'GET', isArray: false},
+             update: {method: 'PUT'}
+            });
+    })
+
+    .factory('Form', function ($resource) {
+        return $resource('/api/v1/form/:id/', {},
+            {query: { method: 'GET', isArray: false},
+             update: {method: 'PUT'}
             });
     })
 })();
