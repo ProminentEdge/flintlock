@@ -18,6 +18,20 @@ User = get_user_model()
 class VidaTests(TestCase):
     fixtures = ['test_forgot.json']
 
+    def test_auth_required(self):
+        c = Client()
+        response = c.get(reverse('firestation_home'))
+        self.assertEqual(response.status_code, 302)
+
+        u = User.objects.create(username='test')
+        u.set_password('test')
+        u.save()
+
+        c.login(username='test', password='test')
+        response = c.get(reverse('firestation_home'))
+        self.assertEqual(response.status_code, 200)
+
+
     def test_approval(self):
         u = User.objects.create(username='test')
         report = Report.objects.create()

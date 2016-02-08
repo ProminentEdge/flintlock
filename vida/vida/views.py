@@ -1,7 +1,6 @@
 from django.views import generic
-from tastypie.resources import ModelResource, ALL
+from vida.firestation.views import LoginRequiredMixin
 from django.db.models import Q
-from django.db.models import Max, Min
 import helpers
 
 from vida.vida.models import Person, Shelter
@@ -104,8 +103,7 @@ class PersonIndexView(generic.ListView):
 
         return queryset
 
-
-class CommonOperatingPicture(generic.base.TemplateView):
+class CommonOperatingPicture(LoginRequiredMixin, generic.base.TemplateView):
     template_name = 'vida/cop.html'
 
 class Reports(generic.base.TemplateView):
