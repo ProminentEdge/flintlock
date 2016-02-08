@@ -7,20 +7,18 @@ from tastypie.authorization import Authorization
 from tastypie import fields
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from tastypie.resources import Resource
 from tastypie.contrib.gis.resources import ModelResource
 
 import helpers
 import os
-import requests, json
+import requests
+import json
 
 User = get_user_model()
 
 from vida.fileservice.helpers import get_gallery_file
 from vida.vida.models import Person
 from vida.vida.models import Shelter, Track, Report, Form, Note
-
-
 
 
 class UserResource(ModelResource):
@@ -64,10 +62,6 @@ class CurrentUserResource(ModelResource):
         """
         return bundle.request.user
 
-    def determine_format(self, request):
-        return 'application/json'
-
-
 
 class VidaUserMixin(ModelResource):
     user = fields.ToOneField(UserResource, 'user',  full=True, blank=True, null=True)
@@ -105,9 +99,6 @@ class TrackResource(VidaUserMixin):
             'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
         }
 
-    def determine_format(self, request):
-        return 'application/json'
-
     def deserialize(self, request, data, format=None):
         if not format:
             format = request.META.get('CONTENT_TYPE', 'application/json')
@@ -143,9 +134,6 @@ class FormResource(VidaUserMixin):
             'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
         }
 
-    def determine_format(self, request):
-        return 'application/json'
-
     def deserialize(self, request, data, format=None):
         if not format:
             format = request.META.get('CONTENT_TYPE', 'application/json')
@@ -169,9 +157,6 @@ class NoteResource(ModelResource):
             'modified': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
             'created': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
         }
-
-    def determine_format(self, request):
-        return 'application/json'
 
     def hydrate_author(self, bundle):
         """
@@ -215,9 +200,6 @@ class ReportResource(VidaUserMixin):
             'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
         }
 
-    def determine_format(self, request):
-        return 'application/json'
-
     def save(self, bundle, skip_errors=False):
         if bundle.via_uri:
             return bundle
@@ -251,7 +233,6 @@ class ReportResource(VidaUserMixin):
 
         return bundle
 
-
     def deserialize(self, request, data, format=None):
         if not format:
             format = request.META.get('CONTENT_TYPE', 'application/json')
@@ -260,7 +241,6 @@ class ReportResource(VidaUserMixin):
             return request.POST
 
         return super(ModelResource, self).deserialize(request, data, format)
-
 
 
 class PersonResource(ModelResource):
@@ -321,9 +301,6 @@ class PersonResource(ModelResource):
             'slug': ALL,
         }
         custom_filters = {'custom_query': filter_custom_query}
-
-    def determine_format(self, request):
-        return 'application/json'
 
     def prepend_urls(self):
         """ Add the following array of urls to the Tileset base urls """
@@ -450,5 +427,3 @@ class ShelterResource(ModelResource):
         queryset = Shelter.objects.all()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
 
-    def determine_format(self, request):
-        return 'application/json'

@@ -30,7 +30,7 @@
           reportRequest = q_.defer();
           var context = this;
           formService_.getForms().then(function() {
-            http_.get('/api/v1/report?limit=0&modified__gt=' + latestTime.toISOString()).then(function(response) {
+            http_.get('/api/v1/report/?limit=0&modified__gt=' + latestTime.toISOString()).then(function(response) {
               response.data.objects.reverse().forEach(function(report) {
                 var modifiedDate = new Date(report.modified);
                 if (modifiedDate > latestTime) {

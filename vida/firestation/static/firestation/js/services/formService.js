@@ -31,7 +31,7 @@
           }
           formsRequest = q_.defer();
           if (forms === null || forceUpdate) {
-            http_.get('/api/v1/form').then(function(response) {
+            http_.get('/api/v1/form/').then(function(response) {
               forms = response.data.objects;
               forms.forEach(function(form) {
                 context.processForm(form);

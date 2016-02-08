@@ -251,7 +251,7 @@ SERVER_EMAIL = os.getenv('SERVER_EMAIL', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', '')
 
 TASTYPIE_DATETIME_FORMATTING = 'rfc-2822'
-
+TASTYPIE_DEFAULT_FORMATS = ['json']
 AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
