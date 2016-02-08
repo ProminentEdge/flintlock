@@ -5,7 +5,7 @@ from .vida_core.forms import VIDAPasswordResetForm
 from .vida_core.views import ForgotUsername, logout, AuthorizeView
 from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
 from .vida.api import PersonResource, ShelterResource, TrackResource, FormResource, ReportResource, LatestTrack, \
-    NoteResource
+    NoteResource, CurrentUserResource
 from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView, CommonOperatingPicture, Reports
 from fileservice.api import FileItemResource
 from tastypie.api import Api
@@ -24,6 +24,7 @@ v1_api.register(LatestTrack())
 v1_api.register(NoteResource())
 v1_api.register(FormResource())
 v1_api.register(ReportResource())
+v1_api.register(CurrentUserResource())
 
 
 urlpatterns = patterns('',

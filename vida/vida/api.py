@@ -32,6 +32,43 @@ class UserResource(ModelResource):
         authorization = Authorization()
 
 
+class CurrentUserResource(ModelResource):
+
+    class Meta:
+        queryset = User.objects.all()
+        fields = ['username', 'first_name', 'last_name', 'is_superuser']
+        allowed_methods = ['get']
+        include_resource_uri = False
+        resource_name = 'current-user'
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
+        authorization = Authorization()
+
+    def dispatch_list(self, request, **kwargs):
+        """
+        A view for handling the various HTTP methods (GET/POST/PUT/DELETE) over
+        the entire list of resources.
+
+        Relies on ``Resource.dispatch`` for the heavy-lifting.
+        """
+        return self.dispatch('detail', request, **kwargs)
+
+    def obj_get(self, bundle, **kwargs):
+        """
+        Fetches an individual object on the resource.
+
+        This needs to be implemented at the user level. If the object can not
+        be found, this should raise a ``NotFound`` exception.
+
+        ``ModelResource`` includes a full working version specific to Django's
+        ``Models``.
+        """
+        return bundle.request.user
+
+    def determine_format(self, request):
+        return 'application/json'
+
+
+
 class VidaUserMixin(ModelResource):
     user = fields.ToOneField(UserResource, 'user',  full=True, blank=True, null=True)
 

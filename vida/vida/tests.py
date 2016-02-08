@@ -31,6 +31,33 @@ class VidaTests(TestCase):
         response = c.get(reverse('firestation_home'))
         self.assertEqual(response.status_code, 200)
 
+    def test_user_api(self):
+        u = User.objects.create(username='test', first_name='tester', last_name='mcgee')
+        u.set_password('test')
+        u.save()
+
+        c = Client()
+        response = c.get('/api/v1/current-user/')
+        self.assertEqual(response.status_code, 401)
+
+        c.login(username='test', password='test')
+        response = c.get('/api/v1/current-user/')
+        self.assertEqual(response.status_code, 200)
+        js = json.loads(response.content)
+        self.assertEqual(js['first_name'], 'tester')
+        self.assertEqual(js['last_name'], 'mcgee')
+        self.assertEqual(js['is_superuser'], False)
+        self.assertEqual(js['username'], 'test')
+
+        js['is_superuser'] = True
+        response = c.post('/api/v1/current-user/', data=json.dumps(js), content_type='application/json')
+        self.assertEqual(response.status_code, 405)
+
+        response = c.put('/api/v1/current-user/', data=json.dumps(js), content_type='application/json')
+        self.assertEqual(response.status_code, 405)
+
+        response = c.delete('/api/v1/current-user/')
+        self.assertEqual(response.status_code, 405)
 
     def test_approval(self):
         u = User.objects.create(username='test')
