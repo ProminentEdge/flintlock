@@ -6,7 +6,8 @@ from .vida_core.views import ForgotUsername, logout, AuthorizeView
 from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
 from .vida.api import PersonResource, ShelterResource, TrackResource, FormResource, ReportResource, LatestTrack, \
     NoteResource, CurrentUserResource
-from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView, CommonOperatingPicture, Reports
+from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView, CommonOperatingPicture, Reports, \
+    EmbeddableCOP
 from fileservice.api import FileItemResource
 from tastypie.api import Api
 from firestation.views import Home
@@ -29,6 +30,7 @@ v1_api.register(CurrentUserResource())
 
 urlpatterns = patterns('',
     url(r'^$', CommonOperatingPicture.as_view(), name='firestation_home'),
+    url(r'^embed$', EmbeddableCOP.as_view(), name='firestation_embed'),
     (r'^api/', include(v1_api.urls)),
     url(r'^', include('vida.firestation.urls')),
     url(r'^', include('vida.vida.urls')),

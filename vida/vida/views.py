@@ -106,6 +106,13 @@ class PersonIndexView(generic.ListView):
 class CommonOperatingPicture(LoginRequiredMixin, generic.base.TemplateView):
     template_name = 'vida/cop.html'
 
+
+class EmbeddableCOP(CommonOperatingPicture):
+    def get_context_data(self, **kwargs):
+        context = super(EmbeddableCOP, self).get_context_data(**kwargs)
+        context['embed'] = True
+        return context
+
 class Reports(generic.base.TemplateView):
     template_name = 'vida/reports.html'
 

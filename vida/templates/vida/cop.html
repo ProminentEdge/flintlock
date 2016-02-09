@@ -154,7 +154,9 @@
     </button>
 </div>
 
-{% include "firestation/_navbar.html" %}
+{% if not embed %}
+    {% include "firestation/_navbar.html" %}
+
 
 <div class="ct-site--map">
     <div class="container">
@@ -177,6 +179,7 @@
         </div>
     </div>
 </header>
+{% endif %}
 <section class="ct-u-paddingBottom60">
     <div class="container">
         <div class="ct-productMeta--single ">
@@ -218,11 +221,14 @@
         </div>
     </div>
 </section>
+{% if not embed %}
 <section class="ct-u-paddingBoth60 ct-js-section" data-bg-color="#f3f3f3">
     <div class="container">
     </div>
 </section>
-{% include 'firestation/_footer.html' %}
+
+    {% include 'firestation/_footer.html' %}
+{% endif %}
 </div>
 
 {% include "firestation/_vida_static.html" %}
