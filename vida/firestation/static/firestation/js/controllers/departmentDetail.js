@@ -3,7 +3,7 @@
 (function() {
     angular.module('fireStation.departmentDetailController', [])
 
-    .controller('jurisdictionController', function($scope, $http, LatestTracks, Report, map, $interval, reportService, formService, Form) {
+    .controller('jurisdictionController', function($scope, $http, CurrentUser, LatestTracks, Report, map, $interval, reportService, formService, Form) {
           var departmentMap = map.initMap('map', {scrollWheelZoom: false});
           var timeFormat = 'MMMM Do YYYY, hh:mm:ss';
           var fitBoundsOptions = {};
@@ -12,6 +12,12 @@
 
           $scope.tracks = [];
           $scope.lastUpdated = moment().format(timeFormat);
+
+          CurrentUser.query().$promise.then(function(data) {
+            reportService.setCurrentUser(data);
+          }, function(error) {
+            console.log('Error retrieving current user: ', error);
+          });
 
           location.search.substr(1).split("&").forEach(function(item) {queryDict[item.split("=")[0]] = item.split("=")[1]});
 
@@ -31,11 +37,11 @@
                       var markerConfig = {fillOpacity: .5, color: track.force_color};
                       var user = track.user ? track.user.username : 'Not Specified';
                       var shouldAnimate = true;
-                      if (moment.now() - moment(track.timestamp) > 1000 * 300 /* 300 seconds */) {
+                      if (moment.now() - moment(new Date(track.timestamp)) > 1000 * 300 /* 300 seconds */) {
                         shouldAnimate = false;
                       }
 
-                      var popupText = '<b>User: </b>' + user + '<br/> <b>Time:</b> ' + moment(track.timestamp).format(timeFormat);
+                      var popupText = '<b>User: </b>' + user + '<br/> <b>Time:</b> ' + moment(new Date(track.timestamp)).format(timeFormat);
 
                       markerConfig.icon = L.icon.pulse({
                         iconSize: track.mayday ? [20,20] : [10,10],

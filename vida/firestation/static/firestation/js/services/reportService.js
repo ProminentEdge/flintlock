@@ -11,6 +11,7 @@
 
     .provider('reportService', function() {
         this.reports = [];
+        this.currentUser = null;
         var latestTime = new Date(0);
         var reportRequest = null;
         this.$get = function($rootScope, $q, $http, $modal, map, formService) {
@@ -86,6 +87,7 @@
           modalScope.form = form;
           modalScope.showStatus = showStatus;
           modalScope.report = report;
+          modalScope.canApprove = this.currentUser && this.currentUser.is_superuser;
           var modalInstance = modal_.open({
             animation: true,
             backdrop: 'static',
@@ -97,6 +99,10 @@
           }, function () {
             console.log('Modal dismissed at: ' + new Date());
           });
+        };
+
+        this.setCurrentUser = function(user) {
+          this.currentUser = user;
         };
   });
 

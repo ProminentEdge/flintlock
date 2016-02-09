@@ -17,6 +17,12 @@
             });
     })
 
+    .factory('CurrentUser', function ($resource) {
+        return $resource('/api/v1/current-user/', {},
+            {query: { method: 'GET', isArray: false}
+            });
+    })
+
     .factory('Report', function ($resource) {
         return $resource('/api/v1/report/:id/', {},
             {query: { method: 'GET', isArray: false},
