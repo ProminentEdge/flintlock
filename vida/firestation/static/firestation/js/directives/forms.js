@@ -71,11 +71,11 @@
 
             scope.createReport = function(form, geom) {
               var baseData = {};
-              for (var prop in form.schema.properties) {
-                if (form.schema.properties.hasOwnProperty(prop) && form.schema.properties[prop].type === 'datetime') {
-                  baseData[prop] = new Date();
+              form.schema.properties.forEach(function(property) {
+                if (property.property.type === 'datetime') {
+                  baseData[property.name] = new Date();
                 }
-              }
+              });
               reportService.viewReport({
                 formTitle: form.schema.title,
                 timestamp_local: new Date(),

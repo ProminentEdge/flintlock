@@ -3,18 +3,18 @@
         <h3 class="modal-title">{{ form.schema.title }}</h3>
     </div>
     <div class="modal-body">
-        <div class="input-group" ng-if="propName !== 'photos' && prop.type !== 'array'" ng-repeat="(propName, prop) in form.schema.properties">
-            <span class="input-group-addon">{{propName}}</span>
+        <div class="input-group" ng-if="prop.name !== 'photos' && prop.property.type !== 'array'" ng-repeat="prop in form.schema.properties">
+            <span class="input-group-addon">{{prop.name}}</span>
 
-            <input ng-if="prop.type === 'string' && !prop.enum" ng-disabled="showStatus" class="form-control" type="text" placeholder="{{prop.description}}" ng-model="report.data[propName]"/>
+            <input ng-if="prop.property.type === 'string' && !prop.property.enum" ng-disabled="showStatus" class="form-control" type="text" placeholder="{{prop.property.description}}" ng-model="report.data[prop.name]"/>
 
-            <select ng-if="prop.enum" ng-disabled="showStatus" id="injury" class="form-control" ng-model="report.data[propName]">
+            <select ng-if="prop.property.enum" ng-disabled="showStatus" id="injury" class="form-control" ng-model="report.data[prop.name]">
                 <option value="" > -- choose -- </option>>
-                <option ng-repeat="item in prop.enum" >{{ item }}</option>
+                <option ng-repeat="item in prop.property.enum" >{{ item }}</option>
             </select>
 
-            <input ng-if="prop.type === 'datetime'" ng-disabled="showStatus" class="form-control" type="datetime-local" ng-model="report.data[propName]"/>
-            <a ng-if="prop.description" tooltip="{{prop.description}}" tooltip-animation="false" tooltip-placement="right" class="info-tooltip input-group-addon glyphicon glyphicon-info-sign"></a>
+            <input ng-if="prop.property.type === 'datetime'" ng-disabled="showStatus" class="form-control" type="datetime-local" ng-model="report.data[prop.name]"/>
+            <a ng-if="prop.property.description" tooltip="{{prop.property.description}}" tooltip-animation="false" tooltip-placement="right" class="info-tooltip input-group-addon glyphicon glyphicon-info-sign"></a>
         </div>
 
         <div class="row" ng-if="getMediaProp() !== null">

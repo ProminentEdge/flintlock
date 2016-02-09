@@ -41,9 +41,9 @@
               });
             };
             scope.getMediaProp = function() {
-              for (var prop in scope.form.schema.properties) {
-                if (scope.form.schema.properties.hasOwnProperty(prop) && prop.toLowerCase() === 'photos') {
-                  return prop;
+              for (var i = 0; i < scope.form.schema.properties.length; i++) {
+                if (scope.form.schema.properties[i].name.toLowerCase() === 'photos') {
+                  return scope.form.schema.properties[i].name;
                 }
               }
               return null;

@@ -59,13 +59,11 @@
           report.formTitle = form ? form.schema.title : report.form;
           report.modified = new Date(report.modified).toISOString();
           report.timestamp = new Date(report.timestamp).toISOString();
-          for (var prop in form.schema.properties) {
-            if (form.schema.properties.hasOwnProperty(prop) &&
-                form.schema.properties[prop].type === 'datetime' &&
-                report.data[prop]) {
-              report.data[prop] = new Date(report.data[prop]);
+          form.schema.properties.forEach(function(property) {
+            if (property.property.type === 'datetime' && report.data[property.name]) {
+              report.data[property.name] = new Date(report.data[property.name]);
             }
-          }
+          });
           for (var i = 0; i < context.reports.length; i++) {
             if (context.reports[i].id === report.id) {
               context.reports[i] = report;

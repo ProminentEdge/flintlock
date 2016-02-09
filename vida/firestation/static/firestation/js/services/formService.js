@@ -17,6 +17,13 @@
 
         this.processForm = function(form) {
           form.schema = JSON.parse(form.schema);
+          var properties = [];
+          for (var prop in form.schema.properties) {
+            if (form.schema.properties.hasOwnProperty(prop)) {
+              properties.push({name: prop, property: form.schema.properties[prop]})
+            }
+          }
+          form.schema.properties = properties;
           form.icon = L.VectorMarkers.icon({
             icon: 'circle',
             markerColor: form.color
