@@ -11,12 +11,12 @@ class NoteInline(admin.StackedInline):
 
 class NoteAdmin(admin.ModelAdmin):
     model = Note
-    fields = ['note', 'author', 'created']
+
 
 class TrackAdmin(admin.ModelAdmin):
     fields = ['user', 'mayday', 'geom']
-    list_display = ('user', 'timestamp', 'mayday', 'geom')
-    search_fields = ['user', 'timestamp', 'mayday', 'geom']
+    list_display = ('user', 'timestamp', 'mayday')
+    search_fields = ['user', 'timestamp', 'mayday']
     readonly_fields = ('timestamp',)
 
 admin.site.register(Track, TrackAdmin)
@@ -25,11 +25,14 @@ admin.site.register(Track, TrackAdmin)
 class FormAdmin(admin.ModelAdmin):
     fields = ['user', 'schema', 'color', 'emails', 'order']
     list_display = ('user', 'timestamp', 'schema', 'color')
-    search_fields = ['user', 'timestamp', 'schema', 'color']
+    search_fields = ['user__username', 'timestamp', 'schema', 'color']
     readonly_fields = ('timestamp',)
 
 class ProfileAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('user', 'force_type')
+    search_fields = ['user__username']
+    list_filter = ['force_type']
+
 
 admin.site.register(Note, NoteAdmin)
 admin.site.register(Form, FormAdmin)
@@ -37,10 +40,11 @@ admin.site.register(Profile, ProfileAdmin)
 
 class ReportAdmin(admin.ModelAdmin):
     fields = ['user', 'form', 'data', 'geom', 'status']
-    list_display = ('user', 'timestamp', 'form', 'data', 'geom', 'status')
-    search_fields = ['user', 'timestamp', 'form', 'data', 'geom', 'status']
+    list_display = ('user', 'timestamp', 'form', 'data', 'status')
+    search_fields = ['user__username', 'timestamp', 'data', 'status']
     readonly_fields = ('timestamp',)
     inlines = [NoteInline]
+    list_filter = ['status', 'user__username']
 
 admin.site.register(Report, ReportAdmin)
 
@@ -48,8 +52,6 @@ class PersonAdmin(admin.ModelAdmin):
     fields = ['created_by', 'shelter_id', 'family_name', 'given_name', 'gender', 'age', 'description', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'notes', 'barcode']
     list_display = ('given_name', 'family_name', 'gender', 'age', 'created_by')
     search_fields = ['given_name', 'family_name', 'notes', 'barcode']
-
-admin.site.register(Person, PersonAdmin)
 
 class ShelterAdmin(admin.ModelAdmin):
     actions = ['delete_selected']
@@ -74,5 +76,3 @@ class ShelterAdmin(admin.ModelAdmin):
                      person.shelter_id = ''.decode('unicode-escape')  # Shelter has been removed, no need for them to hold shelterID anymore
                      person.save()
             shelter.delete()
-
-admin.site.register(Shelter, ShelterAdmin)

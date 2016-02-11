@@ -50,7 +50,3 @@ class FireDepartmentAdmin(admin.OSMGeoAdmin):
 class ResponseCapabilityAdmin(admin.OSMGeoAdmin):
     pass
 
-
-admin.site.register(FireStation, FireStationAdmin)
-admin.site.register(FireDepartment, FireDepartmentAdmin)
-admin.site.register(Staffing, ResponseCapabilityAdmin)

@@ -26,6 +26,9 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     force_type = models.CharField(max_length=40, choices=FORCE_CHOICES, default='FRIENDLY')
 
+    def __unicode__(self):
+        return getattr(self.user, 'username', 'No User')
+
     @property
     def force_color(self):
 
