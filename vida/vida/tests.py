@@ -262,3 +262,37 @@ class VidaTests(TestCase):
 
         report.notes.add(note)
         self.assertEqual(len(mail.outbox), 4)
+
+    def test_form_order(self):
+        user = User.objects.create(username='test', first_name='first', last_name='last', email='test@aol.com')
+        user.set_password('test')
+        user.save()
+        schema = {
+          "title": "Request For Information (RFI)",
+          "description": "Request For Information",
+          "type": "object",
+          "properties": {
+            "Unit/Outstation": {
+              "type": "string",
+              "enum": [
+                "Bakel",
+                "Thies",
+                "Dakar",
+                "Podor",
+                "Atar"
+              ]
+            }
+          },
+          "required": []
+        }
+
+        Form.objects.create(emails='test@aol.com, sdf@aol.com', schema=schema, color='#FF4136')
+        Form.objects.create(emails='test2@aol.com, sdf@aol.com', schema=schema, color='red', order=1)
+
+        c = Client()
+        c.login(username='test', password='test')
+
+        response = c.get('/api/v1/form/')
+        self.assertEqual(200, response.status_code)
+        js = json.loads(response.content)
+        self.assertEqual(js['objects'][0]['color'], 'red')

@@ -152,6 +152,13 @@ class Form(models.Model):
     schema = models.TextField(null=False, blank=False)
     color = models.CharField(max_length=10, choices=COLOR_CHOICES, blank=True, null=True, verbose_name='Map icon color')
     emails = MultiEmailField(null=True, blank=True)
+    order = models.IntegerField(null=True, blank=True, help_text='Number used for sorting forms on clients.')
+
+    class Meta:
+        ordering = ('order', '-timestamp')
+        index_together = [
+            ['order', 'timestamp'],
+        ]
 
     @cached_property
     def title(self):

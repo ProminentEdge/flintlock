@@ -123,7 +123,7 @@ class FormResource(VidaUserMixin):
 
     class Meta:
         queryset = Form.objects.all()
-        fields = ['user', 'timestamp', 'schema', 'color', 'modified']
+        fields = ['user', 'timestamp', 'schema', 'color', 'modified', 'order']
         include_resource_uri = True
         allowed_methods = ['get']
         always_return_data = True
