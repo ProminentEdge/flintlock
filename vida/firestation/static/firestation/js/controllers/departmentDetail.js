@@ -107,6 +107,15 @@
               });
            };
 
+           if (queryDict.hasOwnProperty('newReportType') === true) {
+             formService.getForms().then(function(forms) {
+                 var form = formService.getFormByURI('/api/v1/form/' + queryDict.newReportType + '/');
+                 if (form != null) {
+                   reportService.createReport(form);
+                 }
+             });
+           };
+
           /*
           if (config.centroid != null) {
            var headquarters = L.marker(config.centroid, {icon: headquartersIcon,zIndexOffset:1000});

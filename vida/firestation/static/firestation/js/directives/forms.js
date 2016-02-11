@@ -70,20 +70,7 @@
             };
 
             scope.createReport = function(form, geom) {
-              var baseData = {};
-              form.schema.properties.forEach(function(property) {
-                if (property.property.type === 'datetime') {
-                  baseData[property.name] = new Date();
-                }
-              });
-              reportService.viewReport({
-                formTitle: form.schema.title,
-                timestamp_local: new Date(),
-                data: baseData,
-                geom: geom,
-                form: form.resource_uri,
-                status: 'SUBMITTED'
-              }, false);
+              return reportService.createReport(form, geom);
             };
           }
         };

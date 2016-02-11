@@ -102,6 +102,24 @@
         this.setCurrentUser = function(user) {
           this.currentUser = user;
         };
+
+        this.createReport = function(form, geom) {
+          var baseData = {};
+          var context = this;
+          form.schema.properties.forEach(function(property) {
+            if (property.property.type === 'datetime') {
+              baseData[property.name] = new Date();
+            }
+          });
+          context.viewReport({
+            formTitle: form.schema.title,
+            timestamp_local: new Date(),
+            data: baseData,
+            geom: geom,
+            form: form.resource_uri,
+            status: 'SUBMITTED'
+          }, false);
+        };
   });
 
 
