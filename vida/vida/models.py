@@ -116,6 +116,12 @@ class Track(models.Model):
     def __unicode__(self):
         return unicode(self.user)
 
+    class Meta:
+        index_together = [
+            ['user', 'timestamp'],
+        ]
+
+
     @property
     def force_color(self):
         if not self.user:
