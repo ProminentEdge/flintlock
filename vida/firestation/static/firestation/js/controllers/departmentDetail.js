@@ -121,7 +121,7 @@
           formService.getForms().then(function(forms) {
             var form = formService.getFormByURI('/api/v1/form/' + queryDict.newReportType + '/');
             if (form != null) {
-              reportService.createReport(form);
+              reportService.createReport(form, null);
             }
           });
         };
