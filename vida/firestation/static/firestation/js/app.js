@@ -18,7 +18,8 @@
       'fireStation.graphs',
       'fireStation.forms',
       'fireStation.report',
-      'fireStation.reportList'
+      'fireStation.reportList',
+      'fireStation.trackPopup'
   ])
 
   .config(function($interpolateProvider, $httpProvider, $resourceProvider) {

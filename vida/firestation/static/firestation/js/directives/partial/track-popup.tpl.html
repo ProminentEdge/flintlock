@@ -1,0 +1,10 @@
+<div>
+    <div ng-if="track.mayday">
+        <b>Mayday!</b><br/>
+    </div>
+    <b>User: </b> {{ user }} <br/>
+    <b>Time: </b> {{ getTimeStamp() }} <br/>
+    <button ng-disabled="requestProcessing" type="button" class="btn btn-xs btn-primary" ng-click="toggleTrack()">
+        Toggle User Track
+    </button>
+</div>

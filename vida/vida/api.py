@@ -28,6 +28,9 @@ class UserResource(ModelResource):
         resource_name = 'user'
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
+        filtering = {
+            'username': ALL
+        }
 
 
 class CurrentUserResource(ModelResource):
@@ -95,6 +98,7 @@ class TrackResource(VidaUserMixin):
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
         authorization = Authorization()
         filtering = {
+            'user': ALL_WITH_RELATIONS,
             'modified': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
             'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
         }
