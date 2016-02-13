@@ -24,3 +24,4 @@ django-registration-redux==1.2
 django-autocomplete-light==2.2.5
 python-social-auth==0.2.14
 django-multi-email-field==0.3.1
+httplib2
