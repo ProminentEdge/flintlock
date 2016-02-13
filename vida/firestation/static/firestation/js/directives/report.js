@@ -4,7 +4,7 @@
   var module = angular.module('fireStation.report', []);
 
   module.directive('reportDialog',
-      function($http, $sce, reportService) {
+      function($http, $sce, $filter, reportService) {
         return {
           restrict: 'E',
           replace: true,
@@ -65,7 +65,7 @@
             };
 
             scope.formatTimestamp = function(timestamp) {
-              return '@ ' + new Date(timestamp).toLocaleString();
+              return '@ ' + $filter('date')(new Date(timestamp),'MM/dd/yyyy, HH:mm');
             };
 
             scope.getHtml = function(str) {

@@ -4,7 +4,7 @@
   var module = angular.module('fireStation.reportList', []);
 
   module.directive('reportList',
-      function(reportService, formService, NgTableParams, map) {
+      function($filter, reportService, formService, NgTableParams, map) {
         return {
           restrict: 'E',
           replace: true,
@@ -101,7 +101,7 @@
             };
 
             scope.formatTimestamp = function(timestamp) {
-              return new Date(timestamp).toLocaleString();
+              return $filter('date')(timestamp,'MM/dd/yyyy, HH:mm');
             };
 
             scope.viewReport = function(report) {
