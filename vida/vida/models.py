@@ -195,6 +195,7 @@ class Report(NoteLogger, models.Model):
 
     STATUS_CHOICES = [
         ('SUBMITTED', 'SUBMITTED'),
+        ('PENDING', 'PENDING'),
         ('APPROVED', 'APPROVED'),
         ('REJECTED', 'REJECTED'),
     ]
