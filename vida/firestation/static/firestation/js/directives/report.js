@@ -14,6 +14,9 @@
               noteField: ''
             };
             scope.ok = function() {
+              if (scope.unsavedNote()) {
+                  scope.addNote();
+              }
               var postFunc = $http.post;
               if (scope.showStatus) {
                 postFunc = $http.put;
@@ -28,8 +31,13 @@
             scope.cancel = function() {
               scope.$close();
             };
+
+            scope.unsavedNote = function() {
+              return scope.context.noteField != null && scope.context.noteField !== "";
+            };
+
             scope.addNote = function() {
-              if (scope.context.noteField == null || scope.context.noteField === "") {
+              if (!scope.unsavedNote()) {
                   return;
               }
               var payload = {
