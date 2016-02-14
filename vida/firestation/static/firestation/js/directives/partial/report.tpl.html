@@ -41,21 +41,21 @@
                 <option>REJECTED</option>
             </select>
         </div>
-        <div ng-if="showStatus">
-            Notes
+        <div ng-if="showStatus" class="notes-list">
+            <div style="font-size: 16px">Notes</div>
             <ul class="list-group">
               <li class="list-group-item" ng-repeat="note in report.notes">
-                  <div class="input-group">
-                    <span class="input-group-addon">{{ note.author.username }}</span>
-                    <span class="input-group-addon note-timestamp">{{ formatTimestamp(note.created) }}</span>
-                  </div>
-                  <div ng-bind-html="getHtml(note.note)"></div>
+                <div ng-bind-html="getHtml(note.note|| '<i>No Content</i>')"></div>
+                <div ng-show="note.author.username" class='report-author note-user-info'>
+                    Submitted by <b>{{note.author.username}}</b> {{formatTimestamp(note.created)}}.
+                </div>
               </li>
             </ul>
             <div class="input-group">
                 <span class="input-group-addon">Add Note</span>
                 <input class="form-control" type="text" ng-model="context.noteField"/>
-                <a class="info-tooltip input-group-addon glyphicon glyphicon-comment" ng-click="addNote()"></a>
+                <a disabled class="info-tooltip input-group-addon glyphicon glyphicon-comment pointer"
+                   ng-click="addNote()"></a>
             </div>
         </div>
 

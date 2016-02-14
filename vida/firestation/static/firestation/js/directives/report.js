@@ -29,6 +29,9 @@
               scope.$close();
             };
             scope.addNote = function() {
+              if (scope.context.noteField == null || scope.context.noteField === "") {
+                  return;
+              }
               var payload = {
                 note: scope.context.noteField,
                 report__id: scope.report.id
