@@ -14,10 +14,10 @@
             scope.columns = [
                 { title: 'Location', field: '', visible: true, class: 'location-column' },
                 { title: 'Form', field: 'formTitle', visible: true, class: 'form-column' },
+                { title: 'Outstation', field: 'outstation', visible: true, class: 'outstation-column' },
                 { title: 'User', field: 'user.username', visible: true, class: 'user-column' },
                 { title: 'Timestamp', field: 'timestamp', visible: true, class: 'timestamp-column' },
                 { title: 'Status', field: 'status', visible: true, class: 'status-column' },
-                { title: 'Outstation', field: 'outstation', visible: true, class: 'outstation-column' },
                 { title: 'View', field: '', visible: true, class: 'view-column'}
             ];
             scope.filters = {
