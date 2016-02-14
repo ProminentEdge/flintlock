@@ -22,7 +22,16 @@
                 </select>
             </th>
             <th>
-                <input class="form-control" type="text" ng-model="filters.outstation"/>
+                <select class="form-control" ng-model="filters.outstation">
+                    <option value="">-- All --</option>
+                    <option value="Bakel">Bakel</option>
+                    <option value="Dakar">Dakar</option>
+                    <option value="Kedougou">Kedougou</option>
+                    <option value="Nouakchott">Nouakchott</option>
+                    <option value="Podor">Podor</option>
+                    <option value="St. Louis">St. Louis</option>
+                    <option value="Thies">Thies</option>
+                </select>
             </th>
             <th>
                 <input class="form-control" type="text" ng-model="filters.username"/>
