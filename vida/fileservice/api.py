@@ -28,7 +28,18 @@ class FileItemResource(Resource):
         include_resource_uri = False
         allowed_methods = ['get', 'post', 'put']
         always_return_data = True
-        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
+
+        # if you need BasicAuth, we have to not support apikey Auth. turns out Tastypie has no-official support
+        # for Multi-part Form-Data so unfortunately in _some_ situation, it can not work which in this cases means you
+        # can't support both apiKey and basic auth. Tastypie has it listed for 1.0 release but we're currently on 0.13.
+        # if you add basic auth after apikey auth and make a post, you'll get:
+        # Error:
+        # {
+        #    "error_message": "You cannot access body after reading from request's data stream",
+        #    "traceback": "Traceback (most recent call last):\n\n  File \"/webapps/vida/local/lib/python2.7/site-packages/tastypie/resources.py\", line 220, in wrapper\n    response = callback(request, *args, **kwargs)\n\n  File \"/webapps/vida/local/lib/python2.7/site-packages/tastypie/resources.py\", line 451, in dispatch_list\n    return self.dispatch('list', request, **kwargs)\n\n  File \"/webapps/vida/local/lib/python2.7/site-packages/tastypie/resources.py\", line 483, in dispatch\n    response = method(request, **kwargs)\n\n  File \"/webapps/vida/local/lib/python2.7/site-packages/tastypie/resources.py\", line 1382, in post_list\n    deserialized = self.deserialize(request, request.body, format=request.META.get('CONTENT_TYPE', 'application/json'))\n\n  File \"/webapps/vida/local/lib/python2.7/site-packages/django/http/request.py\", line 231, in body\n    raise RawPostDataException(\"You cannot access body after reading from request's data stream\")\n\nRawPostDataException: You cannot access body after reading from request's data stream\n"
+        # }
+        # authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication(), )
+        authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication())  # No basic auth
         authorization = Authorization()
 
     def determine_format(self, request):
