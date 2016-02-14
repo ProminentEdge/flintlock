@@ -24,7 +24,13 @@
             <th>
                 <input class="form-control" type="text" ng-model="filters.username"/>
             </th>
-            <th></th>
+            <th>
+               <select class="form-control" ng-model="filters.timestamp">
+                    <option value="">-- All --</option>
+                    <option value="24HRS">Past 24 Hours</option>
+                    <option value="WEEK">Past Week</option>
+                </select>
+            </th>
             <th>
                 <select class="form-control" ng-model="filters.status">
                     <option value="">-- All --</option>
@@ -33,6 +39,9 @@
                     <option value="APPROVED">APPROVED</option>
                     <option value="REJECTED">REJECTED</option>
                 </select>
+            </th>
+            <th>
+                <input class="form-control" type="text" ng-model="filters.outstation"/>
             </th>
             <th></th>
         </tr>
@@ -52,6 +61,9 @@
                 </td>
                 <td data-title="'Status'" sortable="'status'">
                     {{report.status}}
+                </td>
+                <td data-title="'Status'" sortable="'outstation'">
+                    {{report.outstation}}
                 </td>
                 <td data-title="'View'">
                     <button type="button" class="btn btn-primary full-width" ng-click="viewReport(report)">View Report</button>

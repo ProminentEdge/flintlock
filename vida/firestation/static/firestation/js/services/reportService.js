@@ -68,7 +68,6 @@
             if (context.reports[i].id === report.id) {
               context.reports[i] = report;
               replaced = true;
-              console.log('replaced!');
             }
           }
           if (!replaced) {
