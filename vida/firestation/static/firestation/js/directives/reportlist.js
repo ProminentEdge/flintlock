@@ -47,15 +47,7 @@
                 }
                 if (report.geom) {
                   if (!markers[report.id]) {
-                    markers[report.id] = new L.marker(new L.LatLng(report.geom.coordinates[1], report.geom.coordinates[0]), {
-                      icon: formService.getFormByURI(report.form).icon,
-                      clickable: true
-                    });
-                    markerClickEvents[report.id] = function () {
-                      scope.viewReport(report);
-                    };
-                    markers[report.id].on('click', markerClickEvents[report.id]);
-                    scope.mapLayer.addLayer(markers[report.id]);
+                   setupMarkers(report);
                   }
                 }
               });
@@ -94,12 +86,9 @@
               if (scope.reports) {
                 scope.reports.forEach(function (report) {
                   if (markers[report.id]) {
-                    if (scope.isFiltered(report)) {
-                      markers[report.id].setOpacity(0);
-                      markers[report.id].off('click', markerClickEvents[report.id]);
-                    } else {
-                      markers[report.id].setOpacity(1);
-                      markers[report.id].on('click', markerClickEvents[report.id]);
+                    scope.mapLayer.removeLayer(markers[report.id]);
+                    if (!scope.isFiltered(report)) {
+                      setupMarkers(report);
                     }
                   }
                 });
@@ -137,6 +126,21 @@
             scope.goToLocation = function(report) {
               map.map.setView([report.geom.coordinates[1], report.geom.coordinates[0]], 15);
             };
+
+
+            var setupMarkers = function(report) {
+              markers[report.id] = new L.marker(new L.LatLng(report.geom.coordinates[1], report.geom.coordinates[0]), {
+                icon: formService.getFormByURI(report.form).icon,
+                clickable: true,
+                opacity: 1,
+                riseOnHover: true
+              });
+              markerClickEvents[report.id] = function () {
+                scope.viewReport(report);
+              };
+              markers[report.id].on('click', markerClickEvents[report.id]);
+              scope.mapLayer.addLayer(markers[report.id]);
+            }
           }
         };
       });
