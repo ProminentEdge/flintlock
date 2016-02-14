@@ -86,8 +86,10 @@
                   if (markers[report.id]) {
                     if (scope.isFiltered(report)) {
                       markers[report.id].setOpacity(0);
+                      markers[report.id].off('click', markerClickEvents[report.id]);
                     } else {
                       markers[report.id].setOpacity(1);
+                      markers[report.id].on('click', markerClickEvents[report.id]);
                     }
                   }
                 });
