@@ -80,6 +80,10 @@ class VidaTests(TestCase):
         r.save()
 
     def test_approval_api(self):
+        submitter = User.objects.create(username='submitter')
+        submitter.set_password('test')
+        submitter.save()
+
         u = User.objects.create(username='test')
         u.set_password('test')
         u.save()
@@ -97,18 +101,18 @@ class VidaTests(TestCase):
         }
 
         c = Client()
-        c.login(username='test', password='test')
+        c.login(username='submitter', password='test')
         response = c.get('/api/v1/report/')
         self.assertEqual(response.status_code, 200)
 
         response = c.post('/api/v1/report/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(Report.objects.first().user, submitter)
 
         payload = json.loads(response.content)
         self.assertIn('user', payload)
         payload['status'] = 'APPROVED'
-
-
+        c.login(username='test', password='test')
         response = c.put('/api/v1/report/{id}/'.format(id=payload['id']),
                          data=json.dumps(payload), content_type='application/json')
 
@@ -116,6 +120,7 @@ class VidaTests(TestCase):
         payload = json.loads(response.content)
         rep = Report.objects.get(id=payload['id'])
         self.assertEqual(rep.notes.first().author, u)
+        self.assertEqual(Report.objects.first().user, submitter)
 
     def test_api_json(self):
         u = User.objects.create(username='test')
@@ -142,8 +147,9 @@ class VidaTests(TestCase):
 
         response = c.post('/api/v1/report/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(response.status_code, 201)
+        js = json.loads(response.content)
 
-        response = c.get('/api/v1/report/1/')
+        response = c.get('/api/v1/report/{0}/'.format(js['id']))
         self.assertEqual(response.status_code, 200)
         js = json.loads(response.content)
         self.assertTrue(isinstance(js['data'], dict))

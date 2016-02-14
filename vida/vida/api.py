@@ -70,8 +70,13 @@ class VidaUserMixin(ModelResource):
     user = fields.ToOneField(UserResource, 'user',  full=True, blank=True, null=True)
 
     def hydrate(self, bundle):
+
         if isinstance(bundle.data.get('user'), dict):
-            bundle.data['user'] = bundle.request.user
+            if 'id' in bundle.data['user']:
+                try:
+                    bundle.data['user'] = User.objects.get(id=bundle.data['user']['id'])
+                except User.DoesNotExist:
+                    pass
 
         elif isinstance(bundle.data.get('user'), unicode):
             try:
