@@ -269,3 +269,9 @@ input.ng-invalid {
     font-weight: 100;
     color: black;
 }
+
+.report-author {
+    padding: 10px 8px 0 21px;
+    font-size: 12px;
+    color: #999
+}
