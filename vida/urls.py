@@ -29,7 +29,8 @@ v1_api.register(CurrentUserResource())
 
 
 urlpatterns = patterns('',
-    url(r'^$', CommonOperatingPicture.as_view(), name='firestation_home'),
+    url(r'^$', EmbeddableCOP.as_view(), name='firestation_home'),
+    url(r'^full$', CommonOperatingPicture.as_view(), name='firestation_full'),
     url(r'^embed$', EmbeddableCOP.as_view(), name='firestation_embed'),
     (r'^api/', include(v1_api.urls)),
     url(r'^', include('vida.firestation.urls')),
