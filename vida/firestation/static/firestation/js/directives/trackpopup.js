@@ -15,9 +15,10 @@
               return  $filter('date')(new Date(scope.track.timestamp),'MM/dd/yyyy, HH:mm');
             };
             scope.requestProcessing = false;
-            var updateTrack = function() {
+            var updateTrack = function(username) {
               scope.requestProcessing = true;
-              $http.get('/api/v1/track/?limit=100&user__username=' + scope.track.user.username).then(function (response) {
+
+              $http.get('/api/v1/track/?limit=100&user__username=' + username).then(function (response) {
                 var tracks = response.data.objects;
                 // Create line string
                 var latlngs = [];
@@ -41,14 +42,19 @@
                 map.map.removeLayer(scope.trackLayers[scope.user]);
                 map.layerControl.removeLayer(scope.trackLayers[scope.user]);
                 scope.trackLayers[scope.user] = null;
+                scope.$emit('isShowAllTracks');
+
               } else if (!scope.requestProcessing) {
-                updateTrack();
+                updateTrack(scope.track.user.username);
               }
             };
+            scope.$on('track-showAllTracks', function() {
+                updateTrack(scope.track.user.username);
+            });
 
             scope.$on('tracks-updated', function() {
               if (scope.trackLayers[scope.user] !== null && angular.isDefined(scope.trackLayers[scope.user])) {
-                updateTrack();
+                updateTrack(scope.track.user.username);
               }
             })
           }

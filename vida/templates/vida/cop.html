@@ -76,6 +76,10 @@
                         <div class="ct-u-displayTableCell text-right">
                             <!-- TODO[YS]: just hidden in a case we nee to add it back-->
                             <a ng-hide="true" href="" ng-click="toggleFullScreenMap()"><i class="fa fa-arrows-alt"></i> View Fullscreen Map</a>
+                            <span ng-click="displayAllTracks()">
+                                <a href="" ng-show="isDisplayedTracks">Show all tracks</a>
+                                <a href="" ng-show="!isDisplayedTracks">Hide all tracks</a>
+                            </span>
                             <a href="" style="padding-left: 15px" ng-click="zoomToTracksLayer()"><i class="fa fa-map-pin"></i> Zoom to tracks</a>
                         </div>
                     </div>

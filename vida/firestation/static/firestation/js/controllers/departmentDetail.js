@@ -12,6 +12,7 @@
         var popups = {};
         $scope.tracks = [];
         $scope.lastUpdated = $filter('date')(new Date(),'MM/dd/yyyy, HH:mm:ss');
+        $scope.isDisplayedTracks = true;
 
         CurrentUser.query().$promise.then(function (data) {
           reportService.setCurrentUser(data);
@@ -31,10 +32,11 @@
           LatestTracks.query().$promise.then(function (data) {
             $scope.$broadcast('tracks-updated');
             $scope.tracks = data.objects;
-
+            $scope.usernames = [];
             var tracksMarkers = [];
             var numTracks = $scope.tracks.length;
             $scope.tracks.forEach(function(track) {
+              $scope.usernames.push(track.user.username);
               var markerConfig = {fillOpacity: .5, color: track.force_color};
               var shouldAnimate = true;
               if (moment.now() - moment(new Date(track.timestamp)) > 1000 * 300 /* 300 seconds */) {
@@ -109,7 +111,7 @@
             var re = /^\/api\/v1\/form\/(\d+)\/$/;
 
             Form.query({id: data.form.match(re)[1]}).$promise.then(function (form) {
-              formService.processForm(form)
+              formService.processForm(form);
               reportService.updateReport(data, true);
               reportService.viewReport(data, true);
             });
@@ -123,8 +125,27 @@
               reportService.createReport(form, null);
             }
           });
-        };
+        }
 
+         $scope.displayAllTracks = function() {
+             if ($scope.isDisplayedTracks) {
+                 $scope.$broadcast('track-showAllTracks');
+                 $scope.isDisplayedTracks = !$scope.isDisplayedTracks;
+             }else {
+                 $scope.isDisplayedTracks = !$scope.isDisplayedTracks;
+                 if($scope.usernames) {
+                     angular.forEach($scope.usernames, function(user) {
+                         if(trackLayers[user]) {
+                             map.map.removeLayer(trackLayers[user]);
+                             trackLayers[user] = null;
+                         }
+                     });
+                 }
+             }
+         };
+          $scope.$on('isShowAllTracks', function() {
+              $scope.isDisplayedTracks = true;
+          });
 
         /*
          if (config.centroid != null) {
