@@ -3,16 +3,21 @@
 (function () {
   angular.module('fireStation.departmentDetailController', [])
 
-      .controller('jurisdictionController', function ($scope, $http, $compile, CurrentUser, LatestTracks, Report, map, $interval, reportService, formService, Form) {
+      .controller('jurisdictionController', function ($scope, $http, $compile, Tracks, CurrentUser, LatestTracks, Report, map, $interval, reportService, formService, Form) {
         var departmentMap = map.initMap('map', {scrollWheelZoom: false});
         var timeFormat = 'MMMM Do YYYY, hh:mm:ss';
         var fitBoundsOptions = {};
         var queryDict = {};
         var tracksLayer, stop;
         var trackLayers = {};
+        var trackAllLayers = {};
+
         var popups = {};
+
         $scope.tracks = [];
         $scope.lastUpdated = moment().format(timeFormat);
+        $scope.isDisplayedTracks = true;
+        $scope.users = [];
 
         CurrentUser.query().$promise.then(function (data) {
           reportService.setCurrentUser(data);
@@ -110,7 +115,7 @@
             var re = /^\/api\/v1\/form\/(\d+)\/$/;
 
             Form.query({id: data.form.match(re)[1]}).$promise.then(function (form) {
-              formService.processForm(form)
+              formService.processForm(form);
               reportService.updateReport(data, true);
               reportService.viewReport(data, true);
             });
@@ -124,8 +129,53 @@
               reportService.createReport(form, null);
             }
           });
-        };
+        }
 
+         $scope.displayAllTracks = function() {
+             var usersTmp = [];
+             var usersGeo = {};
+             var userTrack = [];
+             if ($scope.isDisplayedTracks) {
+                 Tracks.query({limit: 100}).$promise.then(function (data) {
+                     $scope.isDisplayedTracks = !$scope.isDisplayedTracks;
+                     var tracks = data.objects;
+                     // Create line string
+                     for (var i = 0; i < tracks.length; i++) {
+                         usersTmp.push(tracks[i].user.username);
+                     }
+                     $scope.users = usersTmp.filter(function (item, i, ar) {
+                         return ar.indexOf(item) === i;
+                     });
+                     angular.forEach($scope.users, function (user) {
+                         var geomTmp = [];
+                         var colorTmp = '';
+                         for (var i = 0; i < tracks.length; i++) {
+                             if (user === tracks[i].user.username) {
+                                 geomTmp.push(tracks[i].geom.coordinates.reverse());
+                                 colorTmp = tracks[0].force_color;
+                             }
+                         }
+                         usersGeo[user] = {
+                             'geom': geomTmp,
+                             'color': colorTmp
+                         };
+                         userTrack = L.polyline(usersGeo[user].geom, {color: usersGeo[user].color, opacity: 1});
+                         trackAllLayers[user] = L.featureGroup([userTrack]);
+                         trackAllLayers[user].addTo(map.map);
+                     });
+                 },function(){
+                     $scope.isDisplayedTracks = true;
+                 });
+             }else {
+                 $scope.isDisplayedTracks = !$scope.isDisplayedTracks;
+                 if($scope.users) {
+                     angular.forEach($scope.users, function(user) {
+                         map.map.removeLayer(trackAllLayers[user]);
+                         trackAllLayers[user] = null;
+                     });
+                 }
+             }
+         };
 
         /*
          if (config.centroid != null) {
