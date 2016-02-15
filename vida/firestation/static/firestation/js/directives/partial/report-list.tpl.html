@@ -18,6 +18,7 @@
             <th>
                 <select class="form-control" ng-model="filters.formTitle">
                     <option value="">-- All --</option>
+                    <option value="none">-- None --</option>
                     <option ng-repeat="form in forms">{{ form.schema.title }}</option>
                 </select>
             </th>

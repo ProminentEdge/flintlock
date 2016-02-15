@@ -109,6 +109,7 @@
 
             scope.isFiltered = function(report) {
               return (scope.filters.formTitle && report.formTitle !== scope.filters.formTitle) ||
+                        (scope.filters.formTitle && scope.filters.formTitle === "none") ||
                         (scope.filters.status && report.status !== scope.filters.status) ||
                         (scope.filters.username && report.user.username.indexOf(scope.filters.username) < 0) ||
                         (scope.filters.outstation && report.outstation.indexOf(scope.filters.outstation) < 0) ||
