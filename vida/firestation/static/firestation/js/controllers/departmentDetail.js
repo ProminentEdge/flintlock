@@ -77,11 +77,11 @@
               }
               tracksLayer = L.featureGroup(tracksMarkers);
               tracksLayer.addTo(departmentMap);
-              map.layerControl.addOverlay(tracksLayer, 'GPS Tracks');
+              map.layerControl.addOverlay(tracksLayer, 'GPS Location');
             }
             setUpdateTime();
           });
-        };
+        }
 
         var stopPolling = function () {
           if (angular.isDefined(stop)) {

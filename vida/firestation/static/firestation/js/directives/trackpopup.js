@@ -4,7 +4,7 @@
   var module = angular.module('fireStation.trackPopup', []);
 
   module.directive('trackPopup',
-      function($http, map) {
+      function($http, $filter, map) {
         return {
           restrict: 'E',
           replace: true,
@@ -12,7 +12,7 @@
           link: function(scope, element, attrs) {
             scope.user = scope.track.user ? scope.track.user.username : 'Not Specified';
             scope.getTimeStamp = function() {
-              return moment(new Date(scope.track.timestamp)).format('MMMM Do YYYY, hh:mm:ss');
+              return  $filter('date')(new Date(scope.track.timestamp),'MM/dd/yyyy, HH:mm');
             };
             scope.requestProcessing = false;
             var updateTrack = function() {
@@ -31,7 +31,8 @@
                 var userTrack = L.polyline(latlngs, {color: scope.track.force_color, opacity: 1});
                 scope.trackLayers[scope.user] = L.featureGroup([userTrack]);
                 scope.trackLayers[scope.user].addTo(map.map);
-                map.layerControl.addOverlay(scope.trackLayers[scope.user], 'User Track');
+                //TODO[YS]: just commented in a case we need to added it back
+                //map.layerControl.addOverlay(scope.trackLayers[scope.user], scope.user );
                 scope.requestProcessing = false;
               });
             };

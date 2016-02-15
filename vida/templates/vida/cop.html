@@ -74,7 +74,8 @@
                             <i class="fa fa-clock-o"></i><h6>Last Updated: {[lastUpdated]}</h6>
                         </div>
                         <div class="ct-u-displayTableCell text-right">
-                            <a href="" ng-click="toggleFullScreenMap()"><i class="fa fa-arrows-alt"></i> View Fullscreen Map</a>
+                            <!-- TODO[YS]: just hidden in a case we nee to add it back-->
+                            <a ng-hide="true" href="" ng-click="toggleFullScreenMap()"><i class="fa fa-arrows-alt"></i> View Fullscreen Map</a>
                             <a href="" style="padding-left: 15px" ng-click="zoomToTracksLayer()"><i class="fa fa-map-pin"></i> Zoom to tracks</a>
                         </div>
                     </div>
