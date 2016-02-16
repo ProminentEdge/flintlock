@@ -14,6 +14,8 @@
 
             <input ng-if="prop.property.type === 'string' && !prop.property.enum" ng-disabled="showStatus" class="form-control" type="text" placeholder="{{prop.property.description}}" ng-model="report.data[prop.name]"/>
 
+            <textarea ng-if="prop.property.type === 'textarea' && !prop.property.enum" ng-disabled="showStatus" class="form-control" type="text" placeholder="{{prop.property.description}}" ng-model="report.data[prop.name]"/>
+
             <select ng-if="prop.property.enum" ng-disabled="showStatus" id="injury" class="form-control" ng-model="report.data[prop.name]">
                 <option value="" > -- choose -- </option>>
                 <option ng-repeat="item in prop.property.enum" >{{ item }}</option>
