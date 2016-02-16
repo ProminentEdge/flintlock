@@ -13,6 +13,7 @@
       'fireStation.shelterService',
       'fireStation.formService',
       'fireStation.reportService',
+      'fireStation.fileUploadService',
       'fireStation.gauge',
       'fireStation.search',
       'fireStation.graphs',

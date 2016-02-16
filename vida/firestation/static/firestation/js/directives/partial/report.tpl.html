@@ -26,10 +26,20 @@
         <div class="row" ng-if="getMediaProp() !== null">
           <div class="col-sm-4" ng-repeat="photo in photos">
             <a ng-click="openPhoto(photo)">
-              <div class="image-clip">
-                <img ng-src="{{photo.thumbUrl}}" class="img-thumbnail">
+              <div ng-if="isPhoto(photo.name)">
+                <div style="background-image: url('{{ photo.thumbUrl }}');" class="thumb"></div>
               </div>
+              <div ng-if="!isPhoto(photo.name)" class="thumb file-thumb"></div>
             </a>
+          </div>
+          <div class="col-sm-12">
+            <div class="input-group">
+                <span class="input-group-addon">Upload File</span>
+                <label ng-if="!isUploading" class="upload-label form-control info-tooltip glyphicon glyphicon-upload">
+                   <input type="file" file-model="$parent.$parent.myFile" class="info-tooltip" tooltip-animation="false" tooltip-append-to-body="true" tooltip-placement="left" tooltip="Upload"/>
+                </label>
+               <label ng-if="isUploading" class="wait-upload-label form-control info-tooltip glyphicon glyphicon-hourglass"></label>
+            </div>
           </div>
         </div>
         <div class="input-group" ng-if="showStatus" ng-disabled="!canApprove">

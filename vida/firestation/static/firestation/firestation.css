@@ -219,13 +219,20 @@ input.ng-invalid {
     min-width: 10px;
 }
 
-.report-dialog .img-thumbnail {
-    background-image: url(/static/images/photo-512.png);
-    background-size: 75%;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-width: 100%;
-    min-height: 100px;
+.report-dialog .thumb {
+    display: inline-block;
+    width: 170px;
+    height: 170px;
+    border: 1px solid #DDD;
+    background-color: #CCC;
+    border-radius: 4px;
+    background-position: center center;
+    background-size: cover;
+}
+
+.report-dialog .file-thumb {
+    background-image: url(/static/images/file-512.png);
+    background-color: white;
 }
 
 .report-dialog .thumbnail-container {
@@ -270,6 +277,28 @@ input.ng-invalid {
     color: black;
 }
 
+label.upload-label input[type="file"] {
+    position: fixed;
+    top: -1000px;
+}
+
+.upload-label, .wait-upload-label {
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 24px;
+    color: #555555;
+    background: #FFF;
+    text-align: center;
+    display: inline-block;
+}
+.upload-label:hover {
+    background: #CCC;
+}
+.upload-label:active {
+    background: #AAA;
+}
+
 .report-author {
     padding: 10px 8px 0 21px;
     font-size: 12px;
@@ -292,4 +321,3 @@ input.ng-invalid {
     max-height: 300px;
     overflow-y: scroll
 }
-
