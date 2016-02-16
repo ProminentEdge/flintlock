@@ -3,16 +3,15 @@
 (function () {
   angular.module('fireStation.departmentDetailController', [])
 
-      .controller('jurisdictionController', function ($scope, $http, $compile, CurrentUser, LatestTracks, Report, map, $interval, reportService, formService, Form) {
+      .controller('jurisdictionController', function ($scope, $http, $compile, $filter, CurrentUser, LatestTracks, Report, map, $interval, reportService, formService, Form) {
         var departmentMap = map.initMap('map', {scrollWheelZoom: false});
-        var timeFormat = 'MMMM Do YYYY, hh:mm:ss';
         var fitBoundsOptions = {};
         var queryDict = {};
         var tracksLayer, stop;
         var trackLayers = {};
         var popups = {};
         $scope.tracks = [];
-        $scope.lastUpdated = moment().format(timeFormat);
+        $scope.lastUpdated = $filter('date')(new Date(),'MM/dd/yyyy, HH:mm:ss');
 
         CurrentUser.query().$promise.then(function (data) {
           reportService.setCurrentUser(data);
@@ -25,7 +24,7 @@
         });
 
         function setUpdateTime() {
-          $scope.lastUpdated = moment().format(timeFormat);
+          $scope.lastUpdated = $filter('date')(new Date(),'MM/dd/yyyy, HH:mm:ss');
         }
 
         function updateTracks() {
