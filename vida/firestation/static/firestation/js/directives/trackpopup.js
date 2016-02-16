@@ -17,6 +17,7 @@
             scope.requestProcessing = false;
             var updateTrack = function() {
               scope.requestProcessing = true;
+
               $http.get('/api/v1/track/?limit=100&user__username=' + scope.track.user.username).then(function (response) {
                 var tracks = response.data.objects;
                 // Create line string

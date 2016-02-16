@@ -4,7 +4,7 @@
     angular.module('fireStation.factories', ['ngResource'])
 
     .factory('Tracks', function ($resource) {
-        return $resource('/api/v1/track/:id/', {},
+        return $resource('/api/v1/track?limit=', {},
             {query: { method: 'GET', isArray: false},
              update: {method: 'PUT'}
             });
