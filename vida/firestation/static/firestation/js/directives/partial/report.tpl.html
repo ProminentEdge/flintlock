@@ -5,8 +5,8 @@
         </button>
         <h3 class="modal-title">{{ form.schema.title }}</h3>
     </div>
-    <div ng-show="form.user.username" class='report-author'>
-        Submitted by <b>{{form.user.username}}</b> {{formatTimestamp(form.timestamp)}}.
+    <div ng-show="report.user.username" class='report-author'>
+        Submitted by <b>{{report.user.username}}</b> {{formatTimestamp(report.timestamp)}}.
     </div>
     <div class="modal-body">
         <div class="input-group" ng-if="prop.name !== 'photos' && prop.property.type !== 'array'" ng-repeat="prop in form.schema.properties">
