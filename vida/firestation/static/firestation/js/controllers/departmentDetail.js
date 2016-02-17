@@ -4,24 +4,51 @@
   angular.module('fireStation.departmentDetailController', [])
 
       .controller('jurisdictionController', function ($scope, $http, $compile, $filter, CurrentUser, LatestTracks, Report, map, $interval, reportService, formService, Form) {
-        var departmentMap = map.initMap('map', {scrollWheelZoom: false});
+        var timeFormat = 'MMMM Do YYYY, hh:mm:ss';
         var fitBoundsOptions = {};
         var queryDict = {};
-        var tracksLayer, stop;
+        var tracksLayer, stop, departmentMap;
         var trackLayers = {};
         var popups = {};
         $scope.tracks = [];
         $scope.lastUpdated = $filter('date')(new Date(),'MM/dd/yyyy, HH:mm:ss');
         $scope.isDisplayedTracks = true;
+        $scope.lastUpdated = moment().format(timeFormat);
+        departmentMap = map.initMap('map', {scrollWheelZoom: false});
+
+        location.search.substr(1).split("&").forEach(function (item) {
+          queryDict[item.split("=")[0]] = item.split("=")[1]
+        });
+
+        $scope.toggleMapVisibility = function() {
+            map.toggleMapVisibility();
+        };
+
+        $scope.refreshReports = function() {
+          reportService.getReports();
+        };
+
+        $scope.$watch(function(){return map.showMap}, function(val){
+            if (map.showMap === true) {
+                angular.element('#map-parent').css({display: 'block'});
+                map.map.invalidateSize();
+            } else {
+                angular.element('#map-parent').css({display: 'none'})
+            }
+        });
+
+        $scope.showMap = function () {
+            return map.showMap;
+        };
+
+        if (queryDict.hasOwnProperty('hideMap') === true && queryDict.hideMap === 'true') {
+            map.showMap = false;
+        }
 
         CurrentUser.query().$promise.then(function (data) {
           reportService.setCurrentUser(data);
         }, function (error) {
           console.log('Error retrieving current user: ', error);
-        });
-
-        location.search.substr(1).split("&").forEach(function (item) {
-          queryDict[item.split("=")[0]] = item.split("=")[1]
         });
 
         function setUpdateTime() {

@@ -1,15 +1,15 @@
 <div class="btn-group" dropdown is-open="status.isopen">
-  <button id="single-button" ng-disabled="!ready" type="button" class="form-button btn btn-primary" dropdown-toggle>
+  <button id="single-button" ng-disabled="!ready" type="button" class="btn btn-primary" dropdown-toggle>
     Create Reports <span class="caret"></span>
   </button>
   <ul class="dropdown-menu" role="menu" aria-labelledby="single-button">
     <li ng-repeat="form in forms" role="menuitem">
         <div class="panel form-panel">
-            <div class="form-title ellipsis">{{ form.schema.title }} </div> <span ng-click="createReport(form, null)" class="glyphicon glyphicon-pencil form-button pull-right"></span><span ng-click="createReportGeo(form)" class="glyphicon glyphicon-map-marker form-button pull-right"></span>
+            <div class="form-title ellipsis">{{ form.schema.title }} </div> <span ng-click="createReport(form, null)" class="glyphicon glyphicon-pencil pull-right"></span><span ng-click="createReportGeo(form)" class="glyphicon glyphicon-map-marker form-button pull-right"></span>
         </div>
     </li>
   </ul>
-  <button ng-if="selectLocationCancel !== null" ng-click="selectLocationCancel()" class="form-button btn btn-danger">
+  <button ng-if="selectLocationCancel !== null" ng-click="selectLocationCancel()" class="btn btn-danger" style="margin-left: 4px; border-radius: 3px;">
       Cancel Report Location Select
   </button>
 

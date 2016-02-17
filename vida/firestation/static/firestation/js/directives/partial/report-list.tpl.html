@@ -1,7 +1,4 @@
-<div ng-if="reports && reports.length > 0" class="report-list">
-    <button type="button" class="btn btn-primary" ng-click="refreshReports()">
-        Refresh Reports
-    </button>
+<div ng-if="reports && reports.length > 0" class="report-list ct-u-paddingTop10">
     <table ng-table="tableParams" class="table table-bordered table-striped">
         <tr>
             <th ng-repeat="col in columns"

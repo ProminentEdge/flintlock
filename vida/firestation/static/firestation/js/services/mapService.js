@@ -5,6 +5,7 @@
 
     .provider('map', function() {
         this.map = null;
+        this.showMap = true;
         this.layerControl = null;
         this.$get = function($rootScope) {
           return this;
@@ -26,6 +27,11 @@
 
             return {'Basemap': vector, 'Imagery': satelliteLayer}
 
+        };
+
+        this.toggleMapVisibility = function() {
+            this.showMap = !this.showMap;
+            return this.showMap;
         };
 
         this.initMap = function(div, options) {

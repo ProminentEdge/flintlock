@@ -30,6 +30,11 @@
             };
 
             scope.createReportGeo = function(form) {
+
+              if (map.showMap === false) {
+                  map.toggleMapVisibility();
+              }
+
               var icon = L.VectorMarkers.icon({
                 icon: 'circle',
                 markerColor: form.color
