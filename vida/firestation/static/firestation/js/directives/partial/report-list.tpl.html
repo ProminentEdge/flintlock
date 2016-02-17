@@ -20,7 +20,7 @@
                 </select>
             </th>
             <th>
-                <select class="form-control" ng-model="filters.outstation">
+                <select class="form-control" ng-model="filters.from">
                     <option value="">-- All --</option>
                     <option value="Bakel">Bakel</option>
                     <option value="Dakar">Dakar</option>
@@ -60,8 +60,8 @@
                 <td data-title="'Form'" filter="{ formTitle: 'text'}" sortable="'formTitle'">
                     {{report.formTitle}}
                 </td>
-                <td data-title="'Outstation'" sortable="'outstation'">
-                    {{report.outstation}}
+                <td data-title="'From'" sortable="'from'">
+                    {{report.from}}
                 </td>
                 <td data-title="'User'" sortable="'user.username'">
                     {{report.user.username}}

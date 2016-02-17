@@ -14,7 +14,7 @@
             scope.columns = [
                 { title: 'Location', field: '', visible: true, class: 'location-column' },
                 { title: 'Form', field: 'formTitle', visible: true, class: 'form-column' },
-                { title: 'Outstation', field: 'outstation', visible: true, class: 'outstation-column' },
+                { title: 'From', field: 'from', visible: true, class: 'from-column' },
                 { title: 'User', field: 'user.username', visible: true, class: 'user-column' },
                 { title: 'Timestamp', field: 'timestamp', visible: true, class: 'timestamp-column' },
                 { title: 'Status', field: 'status', visible: true, class: 'status-column' },
@@ -25,7 +25,7 @@
               username: '',
               status: '',
               timestamp: '',
-              outstation: ''
+              from: ''
             };
             formService.getForms().then(function(forms) {
               scope.forms = forms;
@@ -38,10 +38,10 @@
             scope.$on('reportsUpdated', function() {
               scope.reports = reportService.reports;
               scope.reports.forEach(function(report) {
-                report.outstation = '';
+                report.from = '';
                 for (var prop in report.data) {
-                  if (report.data.hasOwnProperty(prop) && prop.toLowerCase().indexOf('outstation') >= 0) {
-                    report.outstation = report.data[prop];
+                  if (report.data.hasOwnProperty(prop) && prop.toLowerCase() === 'from') {
+                    report.from = report.data[prop];
                     break;
                   }
                 }
@@ -112,7 +112,7 @@
                         (scope.filters.formTitle && scope.filters.formTitle === "none") ||
                         (scope.filters.status && report.status !== scope.filters.status) ||
                         (scope.filters.username && report.user.username.indexOf(scope.filters.username) < 0) ||
-                        (scope.filters.outstation && report.outstation.indexOf(scope.filters.outstation) < 0) ||
+                        (scope.filters.from && report.from.indexOf(scope.filters.from) < 0) ||
                         (scope.filters.timestamp && !matchesTimestamp(report));
             };
 
