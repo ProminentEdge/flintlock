@@ -256,12 +256,20 @@ input.ng-invalid {
     width: 150px;
 }
 
-.view-column {
+.user-column {
     width: 150px;
 }
 
-.form-column {
-    width: 50%
+.view-column {
+    width: 75px;
+}
+
+.timestamp-column {
+    width: 150px;
+}
+
+.from-column {
+    width: 150px;
 }
 
 .report-list .glyphicon-map-marker {
