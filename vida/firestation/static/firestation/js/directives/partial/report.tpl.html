@@ -20,8 +20,10 @@
                 <option value="" > -- choose -- </option>>
                 <option ng-repeat="item in prop.property.enum" >{{ item }}</option>
             </select>
-
-            <input ng-if="prop.property.type === 'datetime'" ng-disabled="showStatus" class="form-control" type="datetime-local" ng-model="report.data[prop.name]"/>
+            <div ng-if="prop.property.type === 'datetime'" >
+                <span class="form-control" ng-show="showStatus">{{ report.data[prop.name] | date : 'MM/dd/yyyy, HH:mm'}}</span>
+                <input class="form-control" ng-if="prop.property.type === 'datetime'" ng-show="!showStatus" type="datetime-local" ng-model="report.data[prop.name]"/>
+            </div>
             <a ng-if="prop.property.description" tooltip="{{prop.property.description}}" tooltip-animation="false" tooltip-placement="right" class="info-tooltip input-group-addon glyphicon glyphicon-info-sign"></a>
         </div>
 
