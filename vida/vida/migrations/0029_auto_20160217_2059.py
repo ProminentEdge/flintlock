@@ -7,10 +7,10 @@ from django.db import migrations
 def outstation_to_from(apps, schema_editor):
     report = apps.get_model("vida", "report")
     for aReport in report.objects.all():
-        for key in aReport.data:
-            if 'outstation' in key.lower():
-                aReport.data['From'] = aReport.data[key]
-                del aReport.data[key]
+        outstation_keys = filter(lambda n: 'outstation' in n.lower(), aReport.data.keys())
+        for key in outstation_keys:
+            aReport.data['From'] = aReport.data[key]
+            del aReport.data[key]
         aReport.save()
 
 
