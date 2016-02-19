@@ -99,10 +99,10 @@
 
             var matchesTimestamp = function(report, field) {
               var msAgo = new Date().getTime() - new Date(report[field]).getTime();
-              if (scope.filters.timestamp === '24HRS') {
+              if (scope.filters[field] === '24HRS') {
                 // Less than millis per day?
                 return msAgo < 1000 * 60 * 60 * 24;
-              } else if (scope.filters.timestamp === 'WEEK') {
+              } else if (scope.filters[field] === 'WEEK') {
                 // Less than millis per week?
                 return msAgo < 1000 * 60 * 60 * 24 * 7;
               }
