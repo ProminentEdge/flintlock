@@ -78,12 +78,13 @@
           }
         };
 
-        this.viewReport = function(report, showStatus) {
+        this.viewReport = function(report, showStatus, originalReport) {
           var form = formService_.getFormByURI(report.form);
           var modalScope = rootScope_.$new();
           modalScope.form = form;
           modalScope.showStatus = showStatus;
           modalScope.report = report;
+          modalScope.originalReport = originalReport;
           modalScope.canApprove = this.currentUser && this.currentUser.is_superuser;
           var modalInstance = modal_.open({
             animation: true,

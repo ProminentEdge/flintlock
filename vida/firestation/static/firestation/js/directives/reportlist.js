@@ -16,7 +16,8 @@
                 { title: 'Form', field: 'formTitle', visible: true, class: 'form-column' },
                 { title: 'From', field: 'from', visible: true, class: 'from-column' },
                 { title: 'User', field: 'user.username', visible: true, class: 'user-column' },
-                { title: 'Timestamp', field: 'timestamp', visible: true, class: 'timestamp-column' },
+                { title: 'Created', field: 'timestamp', visible: true, class: 'timestamp-column' },
+                { title: 'Updated', field: 'modified', visible: true, class: 'timestamp-column' },
                 { title: 'Status', field: 'status', visible: true, class: 'status-column' },
                 { title: 'View', field: '', visible: true, class: 'view-column'}
             ];
@@ -25,6 +26,7 @@
               username: '',
               status: '',
               timestamp: '',
+              modified: '',
               from: ''
             };
             formService.getForms().then(function(forms) {
@@ -95,8 +97,8 @@
               }
             }, true);
 
-            var matchesTimestamp = function(report) {
-              var msAgo = new Date().getTime() - new Date(report.timestamp).getTime();
+            var matchesTimestamp = function(report, field) {
+              var msAgo = new Date().getTime() - new Date(report[field]).getTime();
               if (scope.filters.timestamp === '24HRS') {
                 // Less than millis per day?
                 return msAgo < 1000 * 60 * 60 * 24;
@@ -113,7 +115,8 @@
                         (scope.filters.status && report.status !== scope.filters.status) ||
                         (scope.filters.username && report.user.username.indexOf(scope.filters.username) < 0) ||
                         (scope.filters.from && report.from.indexOf(scope.filters.from) < 0) ||
-                        (scope.filters.timestamp && !matchesTimestamp(report));
+                        (scope.filters.timestamp && !matchesTimestamp(report, 'timestamp') ||
+                        (scope.filters.modified && !matchesTimestamp(report, 'modified')));
             };
 
             scope.formatTimestamp = function(timestamp) {
@@ -121,7 +124,7 @@
             };
 
             scope.viewReport = function(report) {
-              reportService.viewReport(angular.copy(report), true);
+              reportService.viewReport(angular.copy(report), true, report);
             };
 
             scope.goToLocation = function(report) {

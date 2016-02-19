@@ -50,6 +50,10 @@
               };
               $http.post('/api/v1/note/', JSON.stringify(payload)).then(function (note) {
                 scope.report.notes.unshift(note.data);
+                if (scope.originalReport) {
+                  scope.originalReport.notes.unshift(note.data);
+                  scope.originalReport.modified = new Date(note.data.created);
+                }
                 scope.context.noteField = '';
               }, function (error) {
                 console.log('Failed to post note: ', error);

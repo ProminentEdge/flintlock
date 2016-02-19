@@ -1,5 +1,5 @@
 from django.test import TestCase
-
+import time
 import json
 from datetime import timedelta
 from urlparse import urlsplit, urlunsplit
@@ -184,17 +184,24 @@ class VidaTests(TestCase):
         # ensure the object is returned
         payload = json.loads(response.content)
         self.assertTrue(payload['id'])
+        modified_time = payload['modified']
 
         note =  {
         "note": "testing post",
         "report__id": Report.objects.first().id
         }
 
+        time.sleep(1)
+
         response = c.post('/api/v1/note/', data=json.dumps(note), content_type='application/json')
+        payload = json.loads(response.content)
+        new_modified_time = payload['modified']
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Note.objects.last().note, note['note'])
         self.assertIn(Report.objects.first(), Note.objects.last().report_set.all())
         self.assertEqual(Note.objects.last().author, u)
+        self.assertNotEqual(modified_time, Report.objects.first().modified)
+        self.assertNotEqual(modified_time, new_modified_time)
 
     def test_force_type(self):
         user = User.objects.create(username='test')

@@ -42,6 +42,13 @@
                 </select>
             </th>
             <th>
+                <select class="form-control" ng-model="filters.modified">
+                    <option value="">-- All --</option>
+                    <option value="24HRS">Past 24 Hours</option>
+                    <option value="WEEK">Past Week</option>
+                </select>
+            </th>
+            <th>
                 <select class="form-control" ng-model="filters.status">
                     <option value="">-- All --</option>
                     <option value="SUBMITTED">SUBMITTED</option>
@@ -66,8 +73,11 @@
                 <td data-title="'User'" sortable="'user.username'">
                     {{report.user.username}}
                 </td>
-                <td data-title="'Timestamp'" sortable="'timestamp'">
+                <td data-title="'Created'" sortable="'timestamp'">
                     {{formatTimestamp(report.timestamp)}}
+                </td>
+                <td data-title="'Updated'" sortable="'modified'">
+                    {{formatTimestamp(report.modified)}}
                 </td>
                 <td data-title="'Status'" sortable="'status'">
                     {{report.status}}

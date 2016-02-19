@@ -1,6 +1,7 @@
+import json
+from django.utils import timezone
 from django.conf import settings
 from django.contrib.gis.db import models
-import json
 from django.db.models.signals import post_init, post_save, m2m_changed
 from jsonfield import JSONField
 from django.contrib.auth.models import User
@@ -60,6 +61,7 @@ class Note(models.Model):
 
     class Meta:
         ordering = ['-created']
+
 
 class NoteLogger(models.Model):
 
@@ -209,7 +211,6 @@ class Report(NoteLogger, models.Model):
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='SUBMITTED')
     objects = models.GeoManager()
 
-
     class Meta:
         get_latest_by = 'timestamp'
         ordering = ("-timestamp",)
@@ -217,6 +218,7 @@ class Report(NoteLogger, models.Model):
     @property
     def url(self):
         return 'http://cop.imagerytool.net/?showReport={0}'.format(self.id)
+
 
 def timelog_post_init(sender, instance, **kwargs):
     if instance.pk:
@@ -267,6 +269,15 @@ def send_report_emails(sender, **kwargs):
                              html_message=get_template(template + '.html').render(context))
 
 
+def update_report_modified(sender, **kwargs):
+
+    if kwargs.get('action') != 'post_add' or not isinstance(kwargs.get('instance'), Note):
+        return
+
+    note = kwargs.get('instance')
+    note.report_set.all().update(modified=timezone.now())
+
+
 post_init.connect(
     timelog_post_init,
     sender=Report,
@@ -283,6 +294,12 @@ m2m_changed.connect(
     send_report_emails,
     sender=Report.notes.through,
     dispatch_uid='vida.signals.send_email_m2m',
+)
+
+m2m_changed.connect(
+    update_report_modified,
+    sender=Report.notes.through,
+    dispatch_uid='vida.signals.update_report_modified',
 )
 
 class Shelter(models.Model):
