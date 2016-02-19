@@ -11,7 +11,8 @@
           templateUrl: '/static/firestation/js/directives/partial/report.tpl.html',
           link: function (scope, element, attrs) {
             scope.context = {
-              noteField: ''
+              noteField: '',
+              isValidDateTime:true
             };
             scope.ok = function () {
               if (scope.unsavedNote()) {

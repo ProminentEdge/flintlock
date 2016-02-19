@@ -22,9 +22,9 @@
             </select>
             <div ng-if="prop.property.type === 'datetime'" >
                 <span class="form-control" ng-show="showStatus">{{ report.data[prop.name] | date : 'MM/dd/yyyy, HH:mm'}}</span>
-                <input class="form-control" ng-if="prop.property.type === 'datetime'" ng-show="!showStatus" type="datetime-local" ng-model="report.data[prop.name]"/>
+                <date-time-picker  class="form-control" is-valid-date-time="context.isValidDateTime" date-time-model="report.data[prop.name]" ng-show="!showStatus"></date-time-picker>
             </div>
-            <a ng-if="prop.property.description" tooltip="{{prop.property.description}}" tooltip-animation="false" tooltip-placement="right" class="info-tooltip input-group-addon glyphicon glyphicon-info-sign"></a>
+            <a ng-if="prop.property.description" tooltip="{{prop.property.description}} - (MM/dd/YYYY HH:mm)" tooltip-animation="false" tooltip-placement="right" class="info-tooltip input-group-addon glyphicon glyphicon-info-sign"></a>
         </div>
 
         <div class="row" ng-if="getMediaProp() !== null">
@@ -75,7 +75,7 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="!context.isValidDateTime">OK</button>
         <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
     </div>
 </div>

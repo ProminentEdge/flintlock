@@ -20,7 +20,8 @@
       'fireStation.forms',
       'fireStation.report',
       'fireStation.reportList',
-      'fireStation.trackPopup'
+      'fireStation.trackPopup',
+      'fireStation.dateTimePicker'
   ])
 
   .config(function($interpolateProvider, $httpProvider, $resourceProvider) {
