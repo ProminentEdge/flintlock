@@ -18,6 +18,7 @@
       'fireStation.search',
       'fireStation.graphs',
       'fireStation.forms',
+      'fireStation.userList',
       'fireStation.report',
       'fireStation.reportList',
       'fireStation.trackPopup',

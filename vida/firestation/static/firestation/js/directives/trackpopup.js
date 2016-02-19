@@ -56,7 +56,13 @@
               if (scope.trackLayers[scope.user] !== null && angular.isDefined(scope.trackLayers[scope.user])) {
                 updateTrack(scope.track.user.username);
               }
-            })
+            });
+
+            scope.$on('toggleUserTrack', function(event, user) {
+              if (user === scope.user) {
+                scope.toggleTrack();
+              }
+            });
           }
         };
       });

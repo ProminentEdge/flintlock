@@ -1,0 +1,21 @@
+<div class="btn-group user-list" dropdown auto-close="outsideClick" is-open="status.isopen">
+  <button id="users-button" ng-disabled="!ready" type="button" class="btn btn-primary" dropdown-toggle>
+    Users <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu" aria-labelledby="users-button">
+    <li>
+      <div class="input-group">
+        <span class="input-group-addon">Filter: </span>
+        <input class="form-control" type="text" ng-model="search"/>
+      </div>
+    </li>
+    <li ng-repeat="user in users|filter:search:strict" role="menuitem">
+        <div class="panel form-panel">
+            <div class="form-title ellipsis">{{ user }} </div>
+            <span ng-click="zoomToUser(user)" tooltip="Zoom to User Location" tooltip-animation="false" tooltip-placement="top" class="glyphicon glyphicon-screenshot form-button pull-right"></span>
+            <span ng-click="toggleUserLocation(user)" tooltip="Toggle User Location" tooltip-animation="false" tooltip-placement="top" class="glyphicon glyphicon-record form-button pull-right"></span>
+            <span ng-click="toggleUserTrack(user)" tooltip="Toggle User Track" tooltip-animation="false" tooltip-placement="top" class="glyphicon glyphicon-road form-button pull-right"></span>
+        </div>
+    </li>
+  </ul>
+</div>

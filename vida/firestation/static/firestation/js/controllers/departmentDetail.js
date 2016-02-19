@@ -14,6 +14,7 @@
         $scope.lastUpdated = $filter('date')(new Date(),'MM/dd/yyyy, HH:mm:ss');
         $scope.isDisplayedTracks = true;
         $scope.lastUpdated = moment().format(timeFormat);
+        $scope.usernames = [];
         departmentMap = map.initMap('map', {scrollWheelZoom: false});
 
         location.search.substr(1).split("&").forEach(function (item) {
@@ -59,9 +60,9 @@
           LatestTracks.query().$promise.then(function (data) {
             $scope.$broadcast('tracks-updated');
             $scope.tracks = data.objects;
-            $scope.usernames = [];
             var tracksMarkers = [];
             var numTracks = $scope.tracks.length;
+            $scope.usernames.length = 0;
             $scope.tracks.forEach(function(track) {
               $scope.usernames.push(track.user.username);
               var markerConfig = {fillOpacity: .5, color: track.force_color};
@@ -86,16 +87,21 @@
                 var popupScope = $scope.$new();
                 popups[track.user.username] = {
                   scope: popupScope,
-                  compiled: linkFunction(popupScope)[0]
+                  compiled: linkFunction(popupScope)[0],
+                  locationVisible: true
                 };
 
                 popups[track.user.username].scope.track = track;
                 popups[track.user.username].scope.trackLayers = trackLayers;
               }
 
-              var marker = L.marker(track.geom.coordinates.reverse(), markerConfig);
+              var coordinates = track.geom.coordinates;
+              var marker = L.marker([coordinates[1], coordinates[0]], markerConfig);
               marker.bindPopup(popups[track.user.username].compiled);
-              tracksMarkers.push(marker);
+              popups[track.user.username].marker = marker;
+              if (popups[track.user.username].locationVisible) {
+                tracksMarkers.push(marker);
+              }
             });
 
             if (numTracks > 0) {
@@ -126,6 +132,27 @@
 
         updateTracks();
         startPolling();
+
+        $scope.$on('zoomToUserTrack', function(event, user) {
+          if (popups[user]) {
+            var coordinates = popups[user].scope.track.geom.coordinates;
+            departmentMap.setView([coordinates[1], coordinates[0]], 15);
+            if (popups[user].locationVisible) {
+              popups[user].marker.openPopup();
+            }
+          }
+        });
+
+        $scope.$on('toggleUserLocation', function(event, user) {
+          if (popups[user]) {
+            popups[user].locationVisible = !popups[user].locationVisible;
+            if (popups[user].locationVisible) {
+              tracksLayer.addLayer(popups[user].marker);
+            } else {
+              tracksLayer.removeLayer(popups[user].marker);
+            }
+          }
+        });
 
         $scope.zoomToTracksLayer = function () {
           if (tracksLayer) {
