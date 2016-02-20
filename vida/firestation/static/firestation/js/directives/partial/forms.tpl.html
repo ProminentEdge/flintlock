@@ -4,7 +4,7 @@
   </button>
   <ul class="dropdown-menu" role="menu" aria-labelledby="single-button">
     <li ng-repeat="form in forms" role="menuitem">
-        <div class="panel form-panel">
+        <div class="panel form-panel" tooltip="{{ form.schema.description }}" tooltip-animation="false" tooltip-placement="right">
             <div class="form-title ellipsis">{{ form.schema.title }} </div> <span ng-click="createReport(form, null)" class="glyphicon glyphicon-pencil form-button pull-right"></span><span ng-click="createReportGeo(form)" class="glyphicon glyphicon-map-marker form-button pull-right"></span>
         </div>
     </li>
