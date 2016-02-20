@@ -27,7 +27,8 @@
               status: '',
               timestamp: '',
               modified: '',
-              from: ''
+              from: '',
+              hideAll: false
             };
             formService.getForms().then(function(forms) {
               scope.forms = forms;
@@ -110,13 +111,14 @@
             };
 
             scope.isFiltered = function(report) {
-              return (scope.filters.formTitle && report.formTitle !== scope.filters.formTitle) ||
-                        (scope.filters.formTitle && scope.filters.formTitle === "none") ||
-                        (scope.filters.status && report.status !== scope.filters.status) ||
-                        (scope.filters.username && report.user.username.indexOf(scope.filters.username) < 0) ||
-                        (scope.filters.from && report.from.indexOf(scope.filters.from) < 0) ||
-                        (scope.filters.timestamp && !matchesTimestamp(report, 'timestamp') ||
-                        (scope.filters.modified && !matchesTimestamp(report, 'modified')));
+              return scope.filters.hideAll ||
+                  (scope.filters.formTitle && report.formTitle !== scope.filters.formTitle) ||
+                  (scope.filters.formTitle && scope.filters.formTitle === "none") ||
+                  (scope.filters.status && report.status !== scope.filters.status) ||
+                  (scope.filters.username && report.user.username.indexOf(scope.filters.username) < 0) ||
+                  (scope.filters.from && report.from.indexOf(scope.filters.from) < 0) ||
+                  (scope.filters.timestamp && !matchesTimestamp(report, 'timestamp') ||
+                  (scope.filters.modified && !matchesTimestamp(report, 'modified')));
             };
 
             scope.formatTimestamp = function(timestamp) {
@@ -130,6 +132,10 @@
             scope.goToLocation = function(report) {
               map.map.setView([report.geom.coordinates[1], report.geom.coordinates[0]], 15);
             };
+
+            scope.$on('filterAllReports', function(event, filterAllReports) {
+              scope.filters.hideAll = filterAllReports;
+            });
 
 
             var setupMarkers = function(report) {

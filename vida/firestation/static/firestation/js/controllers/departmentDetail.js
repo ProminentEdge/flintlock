@@ -13,6 +13,7 @@
         $scope.tracks = [];
         $scope.lastUpdated = $filter('date')(new Date(),'MM/dd/yyyy, HH:mm:ss');
         $scope.isDisplayedTracks = true;
+        $scope.filterAllReports = false;
         $scope.lastUpdated = moment().format(timeFormat);
         $scope.usernames = [];
         departmentMap = map.initMap('map', {scrollWheelZoom: false});
@@ -181,25 +182,31 @@
           });
         }
 
-         $scope.displayAllTracks = function() {
-             if ($scope.isDisplayedTracks) {
-                 $scope.$broadcast('track-showAllTracks');
-                 $scope.isDisplayedTracks = !$scope.isDisplayedTracks;
-             }else {
-                 $scope.isDisplayedTracks = !$scope.isDisplayedTracks;
-                 if($scope.usernames) {
-                     angular.forEach($scope.usernames, function(user) {
-                         if(trackLayers[user]) {
-                             map.map.removeLayer(trackLayers[user]);
-                             trackLayers[user] = null;
-                         }
-                     });
-                 }
-             }
-         };
-          $scope.$on('isShowAllTracks', function() {
-              $scope.isDisplayedTracks = true;
-          });
+        $scope.displayAllTracks = function() {
+          if ($scope.isDisplayedTracks) {
+            $scope.$broadcast('track-showAllTracks');
+            $scope.isDisplayedTracks = !$scope.isDisplayedTracks;
+          }else {
+            $scope.isDisplayedTracks = !$scope.isDisplayedTracks;
+            if($scope.usernames) {
+              angular.forEach($scope.usernames, function(user) {
+                if(trackLayers[user]) {
+                  map.map.removeLayer(trackLayers[user]);
+                  trackLayers[user] = null;
+                }
+              });
+            }
+          }
+        };
+
+        $scope.$on('isShowAllTracks', function() {
+          $scope.isDisplayedTracks = true;
+        });
+
+        $scope.toggleFilterAllReports = function() {
+          $scope.filterAllReports = !$scope.filterAllReports;
+          $scope.$broadcast('filterAllReports', $scope.filterAllReports);
+        };
 
         /*
          if (config.centroid != null) {

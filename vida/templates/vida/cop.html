@@ -80,6 +80,10 @@
                                 <a href="" ng-show="isDisplayedTracks"><i class="fa fa-dot-circle-o"></i> Show all tracks</a>
                                 <a href="" ng-show="!isDisplayedTracks"><i class="fa fa-dot-circle-o"></i> Hide all tracks</a>
                             </span>
+                            <span ng-if="showMap()"  ng-click="toggleFilterAllReports()">
+                                <a href="" ng-show="filterAllReports"><i class="fa fa-map-marker"></i> Show Reports</a>
+                                <a href="" ng-show="!filterAllReports"><i class="fa fa-map-marker"></i> Hide Reports</a>
+                            </span>
                             <a href="" ng-if="showMap()" style="padding-left: 15px" ng-click="zoomToTracksLayer()"><i class="fa fa-map-pin"></i> Zoom to tracks</a>
                             <a href="" style="padding-left: 15px" ng-click="toggleMapVisibility()"><i class="fa fa-toggle-on"></i> Toggle Map</a>
                         </div>
