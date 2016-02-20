@@ -1,7 +1,12 @@
-from django.contrib import admin
+from django.contrib.gis import admin
 from vida.vida.models import Person, Shelter, Track, Form, Report, Note, Profile
 import uuid
 import helpers
+from django.conf import settings
+
+
+class VidaAdmin(admin.OSMGeoAdmin):
+    openlayers_url = settings.STATIC_URL + 'openlayers/OpenLayers.js'
 
 
 class NoteInline(admin.StackedInline):
@@ -9,11 +14,11 @@ class NoteInline(admin.StackedInline):
     fields = ['note']
     extra = 0
 
-class NoteAdmin(admin.ModelAdmin):
+class NoteAdmin(VidaAdmin):
     model = Note
 
 
-class TrackAdmin(admin.ModelAdmin):
+class TrackAdmin(VidaAdmin):
     fields = ['user', 'mayday', 'geom']
     list_display = ('user', 'timestamp', 'mayday')
     search_fields = ['user', 'timestamp', 'mayday']
@@ -22,13 +27,13 @@ class TrackAdmin(admin.ModelAdmin):
 admin.site.register(Track, TrackAdmin)
 
 
-class FormAdmin(admin.ModelAdmin):
+class FormAdmin(VidaAdmin):
     fields = ['user', 'schema', 'color', 'emails', 'order']
     list_display = ('user', 'timestamp', 'schema', 'color')
     search_fields = ['user__username', 'timestamp', 'schema', 'color']
     readonly_fields = ('timestamp',)
 
-class ProfileAdmin(admin.ModelAdmin):
+class ProfileAdmin(VidaAdmin):
     list_display = ('user', 'force_type')
     search_fields = ['user__username']
     list_filter = ['force_type']
@@ -38,7 +43,7 @@ admin.site.register(Note, NoteAdmin)
 admin.site.register(Form, FormAdmin)
 admin.site.register(Profile, ProfileAdmin)
 
-class ReportAdmin(admin.ModelAdmin):
+class ReportAdmin(VidaAdmin):
     fields = ['user', 'form', 'data', 'geom', 'status']
     list_display = ('user', 'timestamp', 'form', 'data', 'status')
     search_fields = ['user__username', 'timestamp', 'data', 'status']
