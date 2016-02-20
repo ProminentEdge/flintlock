@@ -10,9 +10,14 @@
           replace: true,
           templateUrl: '/static/firestation/js/directives/partial/report.tpl.html',
           link: function (scope, element, attrs) {
+            scope.checkBox={};
+            scope.duplicatedNode = [];
+            var duplicateReport={}, duplicatePhoto = [];
             scope.context = {
               noteField: '',
-              isValidDateTime:true
+              isValidDateTime:true,
+              isDuplicate:false,
+              noteDuplicatedField:''
             };
             scope.ok = function () {
               if (scope.unsavedNote()) {
@@ -24,7 +29,7 @@
               }
               postFunc('/api/v1/report/' + (scope.showStatus ? scope.report.id + '/' : ''), JSON.stringify(scope.report)).then(function (response) {
                 reportService.updateReport(response.data);
-                scope.$close();
+                scope.cancel();
               }, function (error) {
                 console.log('Failed to send report: ', error);
               });
@@ -105,6 +110,80 @@
               });
             });
 
+            scope.duplicate = function(){
+
+              if(!scope.context.isDuplicate) {
+
+                duplicateReport = angular.copy(scope.report);
+                duplicatePhoto = angular.copy(scope.photos);
+                for (var i = 0; i < scope.form.schema.properties.length; i++) {
+                  scope.checkBox[scope.form.schema.properties[i].name] = true;
+                }
+                scope.report.status = "SUBMITTED";
+                scope.report.data.photos = [];
+                scope.photos = [];
+                scope.report.notes = [];
+              }else {
+                scope.report = duplicateReport;
+                scope.photos = duplicatePhoto;
+              }
+                scope.context.isDuplicate = !scope.context.isDuplicate;
+                scope.showStatus = !scope.showStatus;
+                scope.duplicatedNode = [];
+                scope.context.noteDuplicatedField='';
+
+            };
+
+            scope.addDuplicateNote = function() {
+                scope.duplicatedNode.push(scope.context.noteDuplicatedField);
+                scope.context.noteDuplicatedField='';
+            };
+
+             scope.saveDuplicatedNote = function (reportId) {
+               var payload = [];
+               angular.forEach(scope.duplicatedNode, function(duplicatedNode){
+                  payload = {
+                    note: duplicatedNode,
+                    report__id: reportId
+                  };
+
+
+              $http.post('/api/v1/note/', JSON.stringify(payload)).then(function (note) {
+                scope.report.data.notes.unshift(note.data);
+                reportService.updateReport(scope.report.data);
+                scope.noteDuplicatedField = [];
+
+              }, function (error) {
+                console.log('Failed to post note: ', error);
+              });
+               });
+             };
+
+            scope.saveDuplicate = function(){
+               angular.forEach(scope.checkBox, function(value, key){
+                if(!value) {
+                  scope.report.data[key] = null;
+                }
+              });
+              delete scope.report.id;
+              scope.report.user = null;
+              $http.post('/api/v1/report/', JSON.stringify(scope.report)).then(function (response) {
+                scope.report.data = response.data;
+                if (scope.duplicatedNode.length>0) {
+                  scope.saveDuplicatedNote(scope.report.data.id);
+                }else{
+                  reportService.updateReport(scope.report.data);
+
+                }
+                  scope.cancel();
+              }, function (error) {
+                console.log('Failed to send report: ', error);
+              });
+
+
+              scope.context.isDuplicate = !scope.context.isDuplicate;
+
+            };
             scope.isUploading = false;
 
             scope.$on('begin-uploading', function() {
