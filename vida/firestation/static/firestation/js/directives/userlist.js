@@ -21,7 +21,6 @@
 
             scope.$watch('users', function() {
               if (scope.users.length > 0) {
-                console.log(scope.users);
                 scope.ready = true;
               }
             }, true);
