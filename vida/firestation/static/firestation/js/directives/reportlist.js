@@ -56,7 +56,7 @@
               });
               scope.tableParams = new NgTableParams({
                 page: 1,
-                count: 10
+                count: 100
               }, {
                 total: scope.reports.length,
                 data: scope.reports
