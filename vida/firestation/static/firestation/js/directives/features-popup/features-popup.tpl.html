@@ -1,0 +1,40 @@
+<div ng-switch="switchCases">
+    <div ng-switch-when="list">
+        <div>
+            <button class="listItems" ng-show="isReportList" ng-click="showReports()">Report</button>
+        </div>
+        <div>
+            <button class="listItems" ng-show="isGPSList" ng-click="showGPS()">GPS</button>
+        </div>
+        <div>
+            <button class="listItems" ng-show="isTrackList" ng-click="showTracks()">Track</button>
+        </div>
+
+    </div>
+    <div ng-switch-when="items">
+        <div>
+            <button ng-show="isBackButton" ng-click="backButton()"><</button>
+        </div>
+        <div ng-show="isReportItems" ng-repeat="reportItem in reportItems track by $index">
+            <button class="listItems" ng-click="viewReport($index)">{{ reportItem.data.From }} - {{ reportItem.user.username }} </button>
+        </div>
+        <div class="gpsItem" ng-show="isGPSItems" ng-repeat="gpsItem in gpsItems track by $index">
+            <div ng-if="gpsItem.mayday">
+                <b>Mayday!</b><br/>
+            </div>
+            <div><b>User: </b> {{ gpsItem.user.username }} </div>
+            <div><b>Time: </b> {{ getTimeStamp(gpsItem.timestamp) }} </div>
+            <button type="button" class="btn btn-xs btn-primary"
+                    ng-click="viewGPS($index)">
+                Toggle User Track
+            </button>
+        </div>
+        <div class="gpsItem" ng-show="isTrackItems" ng-repeat="trackItem in trackItems track by $index">
+            <div><b>User: </b> {{ trackItem.user.username }} </div>
+            <button type="button" class="btn btn-xs btn-primary"
+                    ng-click="viewTrack($index)">
+                Toggle User Track
+            </button>
+        </div>
+    </div>
+</div>

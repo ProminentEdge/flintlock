@@ -8,6 +8,7 @@ from tastypie import fields
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from tastypie.contrib.gis.resources import ModelResource
+from django.contrib.gis.geos import GEOSGeometry
 
 import helpers
 import os
@@ -106,6 +107,7 @@ class TrackResource(VidaUserMixin):
             'user': ALL_WITH_RELATIONS,
             'modified': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
             'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
+            'geom': ALL,
         }
 
     def deserialize(self, request, data, format=None):
@@ -116,6 +118,13 @@ class TrackResource(VidaUserMixin):
             return request.POST
 
         return super(ModelResource, self).deserialize(request, data, format)
+
+    def apply_sorting(self, objects, options=None):
+        if options and "longitude" in options and "latitude" in options and "D" in options:
+            pnt = GEOSGeometry("POINT(" + options['longitude'] + " " + options['latitude'] + ")", srid=4326)
+            return objects.filter(geom__distance_lte=(pnt, options['D']))
+
+        return super(TrackResource, self).apply_sorting(objects, options)
 
 
 class LatestTrack(TrackResource):
@@ -207,6 +216,7 @@ class ReportResource(VidaUserMixin):
         filtering = {
             'modified': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
             'timestamp': ['exact', 'range', 'gt', 'gte', 'lt', 'lte'],
+            'geom': ALL
         }
 
     def save(self, bundle, skip_errors=False):
@@ -251,6 +261,12 @@ class ReportResource(VidaUserMixin):
 
         return super(ModelResource, self).deserialize(request, data, format)
 
+    def apply_sorting(self, objects, options=None):
+        if options and "longitude" in options and "latitude" in options and "D" in options:
+            pnt = GEOSGeometry("POINT(" + options['longitude'] + " " + options['latitude'] + ")", srid=4326)
+            return objects.filter(geom__distance_lte=(pnt, options['D']))
+
+        return super(ReportResource, self).apply_sorting(objects, options)
 
 class PersonResource(ModelResource):
     created_by = fields.ToOneField(UserResource, 'created_by',  full=True, blank=True, null=True)
@@ -435,4 +451,3 @@ class ShelterResource(ModelResource):
     class Meta:
         queryset = Shelter.objects.all()
         authentication = MultiAuthentication(SessionAuthentication(), ApiKeyAuthentication(), BasicAuthentication())
-
