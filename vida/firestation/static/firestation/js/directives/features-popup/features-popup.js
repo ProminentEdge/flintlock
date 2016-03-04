@@ -32,7 +32,7 @@
 
         angular.forEach($scope.$parent.featureItems[1].objects, function (item) {
             $scope.isTrackList = true;
-            if(item.user) {
+            if(item.user && item.user.username) {
                 if (trackUsername.indexOf(item.user.username) === -1) {
                     trackUsername.push(item.user.username);
                     $scope.trackItems.push(item);
@@ -96,6 +96,20 @@
 
         };
 
+        $scope.trackItemDetails = function(item, index){
+            $scope.trackDetails =  item;
+            $scope.trackDetailsIndex = index;
+            $scope.switchCases = 'trackItemDetails';
+
+        };
+
+        $scope.gpsItemDetails = function(item, index){
+            $scope.gpsDetails =  item;
+            $scope.gpsDetailsIndex = index;
+            $scope.switchCases = 'gpsItemDetails';
+
+        };
+
         var showDialog = function () {
             if ($scope.reportItems.length > 1 || $scope.gpsItems.length > 1 || $scope.trackDisplayItems.length > 1) {
 
@@ -104,12 +118,12 @@
 
                 }else {
                     if ($scope.gpsItems.length === 1) {
-                        $scope.showGPS();
+                        $scope.gpsItemDetails($scope.gpsItems[0], 0);
                         $scope.isBackButton = false;
                     }
 
                     if ($scope.trackDisplayItems.length === 1) {
-                        $scope.showTracks();
+                        $scope.trackItemDetails($scope.trackDisplayItems[0],0);
                         $scope.isBackButton = false;
 
                     }
