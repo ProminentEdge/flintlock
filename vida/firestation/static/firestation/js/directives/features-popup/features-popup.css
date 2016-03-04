@@ -1,5 +1,8 @@
 .listItems{
-    width: 120px;
+    width: 100%;
+    height: 100%;
+    border: solid #dddddd 1px;
+    background-color: white;
 }
 .gpsItem{
     border: solid #dddddd 1px;

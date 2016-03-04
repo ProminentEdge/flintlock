@@ -16,7 +16,7 @@
             <button ng-show="isBackButton" ng-click="backButton()"><</button>
         </div>
         <div ng-show="isReportItems" ng-repeat="reportItem in reportItems track by $index">
-            <button class="listItems" ng-click="viewReport($index)">{{ reportItem.data.From }} - {{ reportItem.user.username }} </button>
+            <button class="listItems" ng-click="viewReport($index)"><span>{{ reportItem.data.From }} - {{ reportItem.user.username }}</span> </button>
         </div>
         <div class="gpsItem" ng-show="isGPSItems" ng-repeat="gpsItem in gpsItems track by $index">
             <div ng-if="gpsItem.mayday">

@@ -32,10 +32,12 @@
 
         angular.forEach($scope.$parent.featureItems[1].objects, function (item) {
             $scope.isTrackList = true;
-            if (trackUsername.indexOf(item.user.username) === -1) {
-                trackUsername.push(item.user.username);
-                $scope.trackItems.push(item);
+            if(item.user) {
+                if (trackUsername.indexOf(item.user.username) === -1) {
+                    trackUsername.push(item.user.username);
+                    $scope.trackItems.push(item);
 
+                }
             }
         });
 
