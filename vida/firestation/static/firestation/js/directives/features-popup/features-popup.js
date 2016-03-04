@@ -38,6 +38,11 @@
                     $scope.trackItems.push(item);
 
                 }
+            }else{
+                item.user={
+                    username:"unknown"
+                };
+                $scope.trackItems.push(item);
             }
         });
 
