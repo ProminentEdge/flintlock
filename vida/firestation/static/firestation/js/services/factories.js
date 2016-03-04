@@ -42,7 +42,7 @@
             });
     })
      .factory('FeaturesTrack', function ($resource) {
-      return $resource('/api/v1/track/?&latitude=:latitude&longitude=:longitude&D=:distance&limit=10', {},
+      return $resource('/api/v1/track/?&latitude=:latitude&longitude=:longitude&D=:distance&limit=150', {},
             {get: { method: 'GET'}
             });
     })
