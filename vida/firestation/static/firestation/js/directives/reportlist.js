@@ -4,7 +4,7 @@
   var module = angular.module('fireStation.reportList', []);
 
   module.directive('reportList',
-      function($filter, reportService, formService, NgTableParams, map) {
+      function($filter, $rootScope, reportService, formService, NgTableParams, map, filterService) {
         return {
           restrict: 'E',
           replace: true,
@@ -87,10 +87,12 @@
 
             scope.$watch('filters', function() {
               if (scope.reports) {
+                  filterService.resetFilters();
                 scope.reports.forEach(function (report) {
                   if (markers[report.id]) {
                     scope.mapLayer.removeLayer(markers[report.id]);
                     if (!scope.isFiltered(report)) {
+                        filterService.setFilters(report);
                       setupMarkers(report);
                     }
                   }
@@ -137,13 +139,22 @@
               scope.filters.hideAll = filterAllReports;
             });
 
+            scope.$on('viewReportFromFeature', function (event, args) {
+              scope.viewReport(args.report);
+            });
 
             var setupMarkers = function(report) {
-              markers[report.id] = new L.marker(new L.LatLng(report.geom.coordinates[1], report.geom.coordinates[0]), {
-                icon: formService.getFormByURI(report.form).icon,
-                clickable: true,
-                opacity: 1,
-                riseOnHover: true
+                $rootScope.$broadcast('filtersTable', {reports: scope.reports});
+                markers[report.id] = new L.RegularPolygonMarker(new L.LatLng(report.geom.coordinates[1], report.geom.coordinates[0]), {
+                    color: formService.getFormByURI(report.form).color,
+                    opacity: 1,
+                    weight: 1,
+                    fillColor: formService.getFormByURI(report.form).color,
+                    fillOpacity: 1,
+                    numberOfSides: 3,
+                    rotation: 90,
+                    radius: 16,
+                    clickable:false
               });
               markerClickEvents[report.id] = function () {
                 scope.viewReport(report);

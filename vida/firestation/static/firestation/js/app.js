@@ -14,6 +14,7 @@
       'fireStation.formService',
       'fireStation.reportService',
       'fireStation.fileUploadService',
+      'fireStation.filterService',
       'fireStation.gauge',
       'fireStation.search',
       'fireStation.graphs',
@@ -22,7 +23,8 @@
       'fireStation.report',
       'fireStation.reportList',
       'fireStation.trackPopup',
-      'fireStation.dateTimePicker'
+      'fireStation.dateTimePicker',
+      'fireStation.featuresPopup'
   ])
 
   .config(function($interpolateProvider, $httpProvider, $resourceProvider) {

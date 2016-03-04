@@ -8,7 +8,7 @@
         return {
           restrict: 'E',
           replace: true,
-          templateUrl: '/static/firestation/js/directives/partial/report.tpl.html',
+          templateUrl: '/static/firestation/js/directives/report-dialog/report-dialog.tpl.html',
           link: function (scope, element, attrs) {
             scope.checkBox={};
             scope.duplicatedNode = [];

@@ -36,4 +36,14 @@
              update: {method: 'PUT'}
             });
     })
+     .factory('FeaturesReport', function ($resource) {
+      return $resource('/api/v1/report/?&latitude=:latitude&longitude=:longitude&D=:distance&limit=10', {},
+            {get: { method: 'GET'}
+            });
+    })
+     .factory('FeaturesTrack', function ($resource) {
+      return $resource('/api/v1/track/?&latitude=:latitude&longitude=:longitude&D=:distance&limit=10', {},
+            {get: { method: 'GET'}
+            });
+    })
 })();

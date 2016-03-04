@@ -8,7 +8,7 @@
         return {
           restrict: 'E',
           replace: true,
-          templateUrl: '/static/firestation/js/directives/partial/track-popup.tpl.html',
+          templateUrl: '/static/firestation/js/directives/track-popup/track-popup.tpl.html',
           link: function(scope, element, attrs) {
             scope.user = scope.track.user ? scope.track.user.username : 'Not Specified';
             scope.getTimeStamp = function() {
@@ -62,6 +62,12 @@
               if (user === scope.user) {
                 scope.toggleTrack();
               }
+            });
+
+             scope.$on('viewTrackFromFeature', function(event, args) {
+                if (args.track.user.username === scope.user) {
+                  scope.toggleTrack();
+                }
             });
           }
         };
