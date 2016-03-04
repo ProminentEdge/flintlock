@@ -18,7 +18,7 @@
             $scope.filterAllReports = false;
             $scope.lastUpdated = moment().format(timeFormat);
             $scope.usernames = [];
-            departmentMap = map.initMap('map', {scrollWheelZoom: false});
+            departmentMap = map.initMap('map', {scrollWheelZoom: false, minZoom: 1});
             L.control.scale().addTo(departmentMap);
 
             departmentMap.on('click', function (e) {
