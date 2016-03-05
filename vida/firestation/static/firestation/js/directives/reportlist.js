@@ -87,15 +87,28 @@
 
             scope.$watch('filters', function() {
               if (scope.reports) {
+                  var filtered_reports = [];
+
                   filterService.resetFilters();
+
                 scope.reports.forEach(function (report) {
                   if (markers[report.id]) {
                     scope.mapLayer.removeLayer(markers[report.id]);
                     if (!scope.isFiltered(report)) {
-                        filterService.setFilters(report);
+                      filterService.setFilters(report);
                       setupMarkers(report);
+
+                      filtered_reports.push(report);
                     }
                   }
+                });
+
+                scope.tableParams = new NgTableParams({
+                  page: 1,
+                  count: 10
+                }, {
+                  total: filtered_reports.length,
+                  data: filtered_reports
                 });
               }
             }, true);
